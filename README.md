@@ -1,6 +1,6 @@
 # paraplan-react
 
-> Library for ParaPlan API
+> Library for ParaPlan API On-Demand and Demand Response public transit
 
 [![NPM](https://img.shields.io/npm/v/paraplan-react.svg)](https://www.npmjs.com/package/paraplan-react) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
