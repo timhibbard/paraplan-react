@@ -10,6 +10,7 @@ import pkg from './package.json'
 
 export default {
   input: 'src/index.js',
+  external: [ 'util' ],
   output: [
     {
       file: pkg.main,
