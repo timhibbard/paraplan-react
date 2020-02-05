@@ -28,4 +28,4 @@ class Example extends Component {
 
 ## License
 
-MIT © [timhibbard](https://github.com/timhibbard)
+MIT © [timhibbard](https://github.com/timhibbard) timhibbard@passiotech.com
