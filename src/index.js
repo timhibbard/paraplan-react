@@ -14,9 +14,7 @@ export default class ExampleComponent extends Component {
     } = this.props
 
     return (
-      <div className={styles.test}>
-        Example Component: {text}
-      </div>
+      "hello world"
     )
   }
 }
