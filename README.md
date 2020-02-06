@@ -10,6 +10,10 @@
 npm install --save paraplan-react
 ```
 
+## Example
+
+There is an example project available [here](https://timhibbard.github.io/paraplan-react/).
+
 ## Login
 
 ```login
