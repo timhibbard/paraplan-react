@@ -24,6 +24,57 @@ export class ExampleComponent extends Component {
     }
 }
 
+export function routes(request){
+    var promise = new Promise((resolve, reject) => {
+        var rv = {
+            success: false,
+            errorMessage: '',
+            routes: []
+        }
+        let url =
+            request.restUrl +
+            'TripService/FleetmanagersInWrapper?Token=' +
+            key +
+            '&Device=Downtown' +
+            '&Date=' +
+            request.tripDate
+
+        console.log(url)
+
+        fetch(url)
+            .then(res => res.json())
+            .then(json => {
+                console.log(json)
+                if (json.success === false) {
+                    rv.errorMessage = json.errorMessage
+                    reject(rv)
+                }
+
+                if (json.list.length === 0) {
+                    resolve(rv)
+                }
+
+                rv.routes = json.list
+                resolve(rv)
+            })
+            .catch(() => {
+                rv.success = false
+                rv.errorMessage = 'Unknown error'
+                reject(rv)
+            })
+    })
+
+    return promise
+}
+
+export function tripRequests(request) {
+    var promise = new Promise((resolve, reject) => {
+
+    })
+
+    return promise
+}
+
 export function login(user) {
     var promise = new Promise((resolve, reject) => {
         var rv = {
@@ -47,7 +98,8 @@ export function login(user) {
         if (isNullOrUndefined(user.version) || user.version === '') {
             rv.errorMessage = 'Please populate .version'
             reject(rv)
-        }if (isNullOrUndefined(user.utcOffset) || user.utcOffset === '') {
+        }
+        if (isNullOrUndefined(user.utcOffset) || user.utcOffset === '') {
             rv.errorMessage = 'Please populate .utcOffset'
             reject(rv)
         }
@@ -60,10 +112,10 @@ export function login(user) {
                 .update(user.password)
                 .digest('hex')
                 .toUpperCase() +
-            '&Device=' + 
+            '&Device=' +
             user.device +
             '&Version' +
-            user.version + 
+            user.version +
             '&UTCOffset=' +
             user.utcOffset
         console.log(url)
