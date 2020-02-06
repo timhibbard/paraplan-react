@@ -27,6 +27,9 @@
     "react-dom": "^15.0.0 || ^16.0.0",
     "dns": "file:./src/mock/dns"
   },
+  "dependencies": {
+    "dns": "file:./src/mock/dns"
+  },
   "devDependencies": {
     "@svgr/rollup": "^2.4.1",
     "babel-core": "^6.26.3",

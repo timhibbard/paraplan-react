@@ -32,13 +32,24 @@ export function login(user) {
             restUrl: '',
             key: '',
         }
-        if (isNullOrUndefined(user.email)) {
-            rv.errorMessage = 'Please enter username'
-            resolve(rv)
+        if (isNullOrUndefined(user.email) || user.email === '') {
+            rv.errorMessage = 'Please populate .email'
+            reject(rv)
         }
-        if (isNullOrUndefined(user.password)) {
-            rv.errorMessage = 'Please enter password'
-            resolve(rv)
+        if (isNullOrUndefined(user.password) || user.password === '') {
+            rv.errorMessage = 'Please populate .password'
+            reject(rv)
+        }
+        if (isNullOrUndefined(user.device) || user.device === '') {
+            rv.errorMessage = 'Please populate .device'
+            reject(rv)
+        }
+        if (isNullOrUndefined(user.version) || user.version === '') {
+            rv.errorMessage = 'Please populate .version'
+            reject(rv)
+        }if (isNullOrUndefined(user.utcOffset) || user.utcOffset === '') {
+            rv.errorMessage = 'Please populate .utcOffset'
+            reject(rv)
         }
 
         var url =
@@ -49,7 +60,11 @@ export function login(user) {
                 .update(user.password)
                 .digest('hex')
                 .toUpperCase() +
-            '&Device=Downtown&Version=0.1&UTCOffset=' +
+            '&Device=' + 
+            user.device +
+            '&Version' +
+            user.version + 
+            '&UTCOffset=' +
             user.utcOffset
         console.log(url)
 
@@ -60,14 +75,14 @@ export function login(user) {
                     console.log('success === false')
                     rv.success = false
                     rv.errorMessage = json.errorMessage
-                    resolve(rv)
+                    reject(rv)
                 }
 
                 if (json.PPPAccess !== 1) {
                     console.log('portal not available')
                     rv.success = false
                     rv.errorMessage = 'Portal access is not available'
-                    resolve(rv)
+                    reject(rv)
                 }
 
                 console.log(json)
@@ -77,7 +92,7 @@ export function login(user) {
                 console.log('unknown error')
                 rv.success = false
                 rv.errorMessage = 'Unknown error'
-                resolve(rv)
+                reject(rv)
             })
     })
 

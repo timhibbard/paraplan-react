@@ -18,17 +18,25 @@ export default class App extends Component {
     }
 
     loginToAPI() {
-        var user = {
+        var request = {
             email: 'timhibbard@gmail.com',
             password: 'tim',
             utcOffset: -5,
+            device: 'connect-web',
+            version: '0.1'
         }
-        login(user).then(loginResult => {
+        login(request).then(response => {
             this.setState({
-                success: loginResult.success,
-                errorMessage: loginResult.errorMessage,
-                key: loginResult.Key,
-                restUrl: loginResult.RESTUrl,
+                success: response.success,
+                errorMessage: response.errorMessage,
+                key: response.Key,
+                restUrl: response.RESTUrl,
+            })
+        })
+        .catch((reason) => {
+            this.setState({
+                success: reason.success,
+                errorMessage: reason.errorMessage,
             })
         })
     }
@@ -43,7 +51,7 @@ export default class App extends Component {
 
         return (
             <form>
-                <button onClick={this.loginToAPI}>Login</button>
+                <button onClick={() => this.loginToAPI()}>Login</button>
                 <br />
                 Success = {success}
                 <br />

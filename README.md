@@ -12,17 +12,31 @@ npm install --save paraplan-react
 
 ## Usage
 
-```jsx
-import React, { Component } from 'react'
+```login
+import { login } from 'paraplan-react'
 
-import MyComponent from 'paraplan-react'
-
-class Example extends Component {
-  render () {
-    return (
-      <MyComponent />
-    )
+loginToAPI() {
+  var request = {
+      email: 'timhibbard@gmail.com',
+      password: 'tim',
+      utcOffset: -5,
+      device: 'connect-web',
+      version: '0.1'
   }
+  login(request).then(response => {
+      this.setState({
+          success: response.success,
+          errorMessage: response.errorMessage,
+          key: response.Key,
+          restUrl: response.RESTUrl,
+      })
+  })
+  .catch((reason) => {
+      this.setState({
+          success: reason.success,
+          errorMessage: reason.errorMessage,
+      })
+  })
 }
 ```
 
