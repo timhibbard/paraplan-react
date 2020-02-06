@@ -45,7 +45,7 @@ loginToAPI() {
 ```routes
 import { routes } from 'paraplan-react'
 
-loginToAPI() {
+viewTodaysRoutes() {
   var request = {
       restUrl: '<from login>',
       key: '<from login>',
