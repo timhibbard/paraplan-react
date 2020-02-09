@@ -34,8 +34,9 @@ export function routes(request){
         let url =
             request.restUrl +
             'TripService/FleetmanagersInWrapper?Token=' +
-            key +
-            '&Device=Downtown' +
+            request.key +
+            '&Device=' +
+            request.device +
             '&Date=' +
             request.tripDate
 
@@ -49,6 +50,8 @@ export function routes(request){
                     rv.errorMessage = json.errorMessage
                     reject(rv)
                 }
+
+                rv.success = true
 
                 if (json.list.length === 0) {
                     resolve(rv)
