@@ -1,6 +1,6 @@
 {
   "name": "paraplan-react",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Library for ParaPlan API",
   "author": "timhibbard",
   "license": "MIT",
@@ -24,11 +24,7 @@
   "peerDependencies": {
     "prop-types": "^15.5.4",
     "react": "^15.0.0 || ^16.0.0",
-    "react-dom": "^15.0.0 || ^16.0.0",
-    "dns": "file:./src/mock/dns"
-  },
-  "dependencies": {
-    "dns": "file:./src/mock/dns"
+    "react-dom": "^15.0.0 || ^16.0.0"
   },
   "devDependencies": {
     "@svgr/rollup": "^2.4.1",
