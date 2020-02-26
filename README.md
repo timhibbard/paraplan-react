@@ -72,6 +72,35 @@ viewTodaysRoutes() {
 }
 ```
 
+## Trips
+
+```trips
+import { trips } from 'paraplan-react'
+
+viewTodaysTrips() {
+  var request = {
+    restUrl: '<from login>',
+    key: '<from login>',
+    device: 'connect-web',
+    startTime: '1582693200',
+    endTime: '1582779600'
+  }
+  trips(request).then(response => {
+      this.setState({
+          success: response.success,
+          errorMessage: response.errorMessage,
+          trips: response.list,
+      })
+  })
+  .catch((reason) => {
+      this.setState({
+          success: reason.success,
+          errorMessage: reason.errorMessage,
+      })
+  })
+}
+```
+
 ## License
 
 MIT © [timhibbard](https://github.com/timhibbard) timhibbard@passiotech.com

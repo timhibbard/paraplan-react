@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import momenttz from 'moment-timezone'
 import dateFormat from 'dateformat'
 
-import { login, routes } from 'paraplan-react'
+import { login, routes, trips } from 'paraplan-react'
 
 export default class App extends Component {
     constructor(props) {
@@ -21,12 +21,51 @@ export default class App extends Component {
             requestDevice: 'paraplan-react-example',
             requestVersion: '0.0.2',
             requestRouteDate: dateFormat(Date.now(), 'yyyy-mm-dd'),
-            routes: []
+            tripStartDate: '1582693200',
+            tripEndDate: '1582779600',
+            routes: [],
+            dispatcherTrips: [],
         }
 
         this.state = this.initialState
 
         this.handleChange = this.handleChange.bind(this)
+    }
+
+
+    showTrips () {
+        const {
+            key,
+            restUrl,
+            requestDevice,
+            tripStartDate,
+            tripEndDate
+        } = this.state
+
+        var request = {
+            key: key,
+            restUrl: restUrl,
+            device: requestDevice,
+            startTime: tripStartDate,
+            endTime: tripEndDate
+        }
+
+        trips(request)
+            .then(response => {
+                this.setState({
+                    success: response.success,
+                    dispatcherTrips: response.list
+                })
+            })
+            .catch(reason => {
+                this.setState({
+                    success: reason.success,
+                    errorMessage: reason.errorMessage,
+                })
+            })
+
+
+
     }
 
     collectRoutes() {
@@ -111,7 +150,8 @@ export default class App extends Component {
             restUrl, 
             clientId, 
             clientCanRequestTrips,
-            routes
+            routes,
+            dispatcherTrips,
         } = this.state
 
         const labelStyle = {
@@ -176,10 +216,19 @@ export default class App extends Component {
                 <button style={buttonStyle} onClick={() => this.collectRoutes()}>
                     Get Routes
                 </button>
+                <button style={buttonStyle} onClick={() => this.showTrips()}>
+                    Get Trips
+                </button>
                 <ul>
                 {routes.map((route, i) => {
                     return (
                     <li key={route.fleetmanagerID}>{route.routeName}</li>
+                    )
+                          
+                })}
+                {dispatcherTrips.map((trip, i) => {
+                    return (
+                    <li key={trip.tripId}>{trip.client.name}</li>
                     )
                           
                 })}

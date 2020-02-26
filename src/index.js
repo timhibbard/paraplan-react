@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { isNullOrUndefined } from 'util'
 import shajs from '../node_modules/sha.js'
-import { resolve } from 'dns'
+
 
 export class ExampleComponent extends Component {
     static propTypes = {
@@ -72,6 +72,61 @@ export function routes(request){
 
 export function tripRequests(request) {
     var promise = new Promise((resolve, reject) => {
+
+    })
+
+    return promise
+}
+
+export function trips(request){
+    var promise = new Promise((resolve, reject) => {
+        var rv = {
+            success: false,
+            errorMessage: '',
+            trips: [],
+        }
+
+        //request
+        // .restUrl
+        // .key
+        // .device
+        // .startTime
+        // .endTime
+
+        var url =
+            request.restUrl +  
+            'TripService/TripsForDispatchers?Token=' +
+            request.key +
+            '&Device=' +
+            request.device + 
+            '&StartTime=' +
+            request.startTime +
+            '&EndTime=' +
+            request.endTime
+        console.log(url)
+
+        fetch(url)
+            .then(res => res.json())
+            .then(json => {
+                if (json.success === false) {
+                    rv.success = false
+                    rv.errorMessage = json.errorMessage
+                    reject(rv)
+                }
+
+                console.log(json)
+
+                rv.trips = json.list
+
+                resolve(json)
+            })
+            .catch(() => {
+                console.log('unknown error')
+                rv.success = false
+                rv.errorMessage = 'Unknown error'
+                reject(rv)
+        })
+
 
     })
 
@@ -148,7 +203,7 @@ export function login(user) {
                 rv.success = false
                 rv.errorMessage = 'Unknown error'
                 reject(rv)
-            })
+        })
     })
 
     return promise
