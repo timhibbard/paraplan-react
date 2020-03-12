@@ -84,7 +84,7 @@ export function tripRequests(request) {
             request.key +
             '&Device=' +
             request.device + 
-            'TripSource=any&TripStatus=all&'
+            '&TripSource=any&TripStatus=all&'
             '&DateRangeStart=' +
             request.startDateTime +
             '&DateRangeEnd=' +

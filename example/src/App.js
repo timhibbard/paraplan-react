@@ -23,8 +23,10 @@ export default class App extends Component {
             requestRouteDate: dateFormat(Date.now(), 'yyyy-mm-dd'),
             // tripStartDate: '1582693200',
             // tripEndDate: '1582779600',
-            tripStartDate: new Date(new Date().setHours(0,0,0,0)).getTime() / 1000,
-            tripEndDate: new Date(new Date().setHours(24,0,0,0)).getTime() / 1000,
+            tripStartDate:
+                new Date(new Date().setHours(0, 0, 0, 0)).getTime() / 1000,
+            tripEndDate:
+                new Date(new Date().setHours(24, 0, 0, 0)).getTime() / 1000,
             routes: [],
             dispatcherTrips: [],
             tripRequests: [],
@@ -35,28 +37,32 @@ export default class App extends Component {
         this.handleChange = this.handleChange.bind(this)
     }
 
-    showRequests () {
+    showRequests() {
         const {
             key,
             restUrl,
             requestDevice,
             tripStartDate,
-            tripEndDate
+            tripEndDate,
         } = this.state
+
+        console.log(tripStartDate)
+        console.log(tripEndDate)
 
         var request = {
             key: key,
             restUrl: restUrl,
             device: requestDevice,
             startDateTime: tripStartDate,
-            endDateTime: tripEndDate
+            endDateTime: tripEndDate,
         }
 
         tripRequests(request)
             .then(response => {
+                console.log(response)
                 this.setState({
                     success: response.success,
-                    tripRequests: response.list
+                    tripRequests: response.requests,
                 })
             })
             .catch(reason => {
@@ -65,18 +71,15 @@ export default class App extends Component {
                     errorMessage: reason.errorMessage,
                 })
             })
-
-
-
     }
 
-    showTrips () {
+    showTrips() {
         const {
             key,
             restUrl,
             requestDevice,
             tripStartDate,
-            tripEndDate
+            tripEndDate,
         } = this.state
 
         var request = {
@@ -84,14 +87,14 @@ export default class App extends Component {
             restUrl: restUrl,
             device: requestDevice,
             startTime: tripStartDate,
-            endTime: tripEndDate
+            endTime: tripEndDate,
         }
 
         trips(request)
             .then(response => {
                 this.setState({
                     success: response.success,
-                    dispatcherTrips: response.list
+                    dispatcherTrips: response.trips,
                 })
             })
             .catch(reason => {
@@ -100,30 +103,22 @@ export default class App extends Component {
                     errorMessage: reason.errorMessage,
                 })
             })
-
-
-
     }
 
     collectRoutes() {
-        const {
-            key,
-            restUrl,
-            requestDevice,
-            requestRouteDate,
-        } = this.state
+        const { key, restUrl, requestDevice, requestRouteDate } = this.state
 
         var request = {
             key: key,
             restUrl: restUrl,
             device: requestDevice,
-            tripDate: requestRouteDate
+            tripDate: requestRouteDate,
         }
         routes(request)
             .then(response => {
                 this.setState({
                     success: response.success,
-                    routes: response.routes
+                    routes: response.routes,
                 })
             })
             .catch(reason => {
@@ -158,8 +153,7 @@ export default class App extends Component {
                     key: response.Key,
                     restUrl: response.RESTUrl,
                     clientId: response.ClientID,
-                    clientCanRequestTrips: response.ClientCanRequestTrips
-
+                    clientCanRequestTrips: response.ClientCanRequestTrips,
                 })
             })
             .catch(reason => {
@@ -174,27 +168,26 @@ export default class App extends Component {
         this.setState({ [event.target.name]: event.target.value })
     }
 
-
     componentDidMount() {
         //this.loginToAPI()
     }
 
     render() {
-        const { 
-            success, 
-            errorMessage, 
-            key, 
-            restUrl, 
-            clientId, 
+        const {
+            success,
+            errorMessage,
+            key,
+            restUrl,
+            clientId,
             clientCanRequestTrips,
             routes,
             dispatcherTrips,
-            tripRequests
+            tripRequests,
         } = this.state
 
         const labelStyle = {
             padding: '10px',
-            display: 'inline-block'
+            display: 'inline-block',
         }
 
         const inputStyle = {
@@ -206,7 +199,7 @@ export default class App extends Component {
             display: 'block',
             padding: '10px',
             margin: '10px',
-            backgroundColor: '#2d9eaf'
+            backgroundColor: '#2d9eaf',
         }
 
         return (
@@ -215,8 +208,8 @@ export default class App extends Component {
                     Email:
                     <input
                         style={inputStyle}
-                        type='text'
-                        name='requestEmail'
+                        type="text"
+                        name="requestEmail"
                         value={this.state.requestEmail}
                         onChange={this.handleChange}
                     />
@@ -225,9 +218,9 @@ export default class App extends Component {
                 <label style={labelStyle}>
                     Password:
                     <input
-                    style={inputStyle}
-                        type='text'
-                        name='requestPassword'
+                        style={inputStyle}
+                        type="text"
+                        name="requestPassword"
                         value={this.state.requestPassword}
                         onChange={this.handleChange}
                     />
@@ -251,7 +244,10 @@ export default class App extends Component {
                 <br />
                 <br />
                 <br />
-                <button style={buttonStyle} onClick={() => this.collectRoutes()}>
+                <button
+                    style={buttonStyle}
+                    onClick={() => this.collectRoutes()}
+                >
                     Get Routes
                 </button>
                 <button style={buttonStyle} onClick={() => this.showTrips()}>
@@ -261,26 +257,27 @@ export default class App extends Component {
                     Get Requests
                 </button>
                 <ul>
-                {routes.map((route, i) => {
-                    return (
-                    <li key={route.fleetmanagerID}>{route.routeName}</li>
-                    )
-                          
-                })}
-                {dispatcherTrips.map((trip, i) => {
-                    return (
-                    <li key={trip.tripId}>{trip.client.name}</li>
-                    )
-                          
-                })}
-                {tripRequests.map((trip, i) => {
-                    return (
-                    <li key={trip.importTripID}>{trip.clientFirstName} {trip.tripStatus}</li>
-                    )
-                          
-                })}
+                    {routes.map((route, i) => {
+                        return (
+                            <li key={route.fleetmanagerID}>
+                                {route.routeName}
+                            </li>
+                        )
+                    })}
+                    {dispatcherTrips.map((trip, i) => {
+                        return <li key={trip.tripId}>{trip.client.name}</li>
+                    })}
+                    {tripRequests && tripRequests.length
+                        ? tripRequests.map((trip, i) => {
+                            return (
+                                <li key={trip.importTripID}>
+                                    {trip.clientFirstName} {trip.tripStatus}
+                                </li>
+                            )
+                        })
+                        : ''}
+                    
                 </ul>
-
             </React.Fragment>
         )
     }

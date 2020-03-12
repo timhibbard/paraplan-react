@@ -82,14 +82,43 @@ viewTodaysTrips() {
     restUrl: '<from login>',
     key: '<from login>',
     device: 'connect-web',
-    startTime: '1582693200',
-    endTime: '1582779600'
+    startTime: new Date(new Date().setHours(0, 0, 0, 0)).getTime() / 1000,
+    endTime: new Date(new Date().setHours(24, 0, 0, 0)).getTime() / 1000,
   }
   trips(request).then(response => {
       this.setState({
           success: response.success,
           errorMessage: response.errorMessage,
-          trips: response.list,
+          trips: response.trips,
+      })
+  })
+  .catch((reason) => {
+      this.setState({
+          success: reason.success,
+          errorMessage: reason.errorMessage,
+      })
+  })
+}
+```
+
+## Trip Requests
+
+```trip requests
+import { tripRequests } from 'paraplan-react'
+
+viewTodaysTripRequests() {
+  var request = {
+    restUrl: '<from login>',
+    key: '<from login>',
+    device: 'connect-web',
+    startTime: new Date(new Date().setHours(0, 0, 0, 0)).getTime() / 1000,
+    endTime: new Date(new Date().setHours(24, 0, 0, 0)).getTime() / 1000,
+  }
+  tripRequests(request).then(response => {
+      this.setState({
+          success: response.success,
+          errorMessage: response.errorMessage,
+          requests: response.requests,
       })
   })
   .catch((reason) => {
