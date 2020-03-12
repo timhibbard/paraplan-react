@@ -72,6 +72,46 @@ export function routes(request){
 
 export function tripRequests(request) {
     var promise = new Promise((resolve, reject) => {
+        var rv = {
+            success: false,
+            errorMessage: '',
+            requests: [],
+        }
+
+        var url =
+            request.restUrl +  
+            'TripService/RequestedTrips?Token=' +
+            request.key +
+            '&Device=' +
+            request.device + 
+            'TripSource=any&TripStatus=all&'
+            '&DateRangeStart=' +
+            request.startDateTime +
+            '&DateRangeEnd=' +
+            request.endDateTime
+        console.log(url)
+
+        fetch(url)
+            .then(res => res.json())
+            .then(json => {
+                if (json.success === false) {
+                    rv.success = false
+                    rv.errorMessage = json.errorMessage
+                    reject(rv)
+                }
+
+                console.log(json)
+
+                rv.requests = json.list
+
+                resolve(rv)
+            })
+            .catch(() => {
+                console.log('unknown error')
+                rv.success = false
+                rv.errorMessage = 'Unknown error'
+                reject(rv)
+        })
 
     })
 
@@ -118,7 +158,7 @@ export function trips(request){
 
                 rv.trips = json.list
 
-                resolve(json)
+                resolve(rv)
             })
             .catch(() => {
                 console.log('unknown error')

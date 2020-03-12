@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import momenttz from 'moment-timezone'
 import dateFormat from 'dateformat'
 
-import { login, routes, trips } from 'paraplan-react'
+import { login, routes, trips, tripRequests } from 'paraplan-react'
 
 export default class App extends Component {
     constructor(props) {
@@ -21,10 +21,13 @@ export default class App extends Component {
             requestDevice: 'paraplan-react-example',
             requestVersion: '0.0.2',
             requestRouteDate: dateFormat(Date.now(), 'yyyy-mm-dd'),
-            tripStartDate: '1582693200',
-            tripEndDate: '1582779600',
+            // tripStartDate: '1582693200',
+            // tripEndDate: '1582779600',
+            tripStartDate: new Date(new Date().setHours(0,0,0,0)).getTime() / 1000,
+            tripEndDate: new Date(new Date().setHours(24,0,0,0)).getTime() / 1000,
             routes: [],
             dispatcherTrips: [],
+            tripRequests: [],
         }
 
         this.state = this.initialState
@@ -32,6 +35,40 @@ export default class App extends Component {
         this.handleChange = this.handleChange.bind(this)
     }
 
+    showRequests () {
+        const {
+            key,
+            restUrl,
+            requestDevice,
+            tripStartDate,
+            tripEndDate
+        } = this.state
+
+        var request = {
+            key: key,
+            restUrl: restUrl,
+            device: requestDevice,
+            startDateTime: tripStartDate,
+            endDateTime: tripEndDate
+        }
+
+        tripRequests(request)
+            .then(response => {
+                this.setState({
+                    success: response.success,
+                    tripRequests: response.list
+                })
+            })
+            .catch(reason => {
+                this.setState({
+                    success: reason.success,
+                    errorMessage: reason.errorMessage,
+                })
+            })
+
+
+
+    }
 
     showTrips () {
         const {
@@ -152,6 +189,7 @@ export default class App extends Component {
             clientCanRequestTrips,
             routes,
             dispatcherTrips,
+            tripRequests
         } = this.state
 
         const labelStyle = {
@@ -219,6 +257,9 @@ export default class App extends Component {
                 <button style={buttonStyle} onClick={() => this.showTrips()}>
                     Get Trips
                 </button>
+                <button style={buttonStyle} onClick={() => this.showRequests()}>
+                    Get Requests
+                </button>
                 <ul>
                 {routes.map((route, i) => {
                     return (
@@ -229,6 +270,12 @@ export default class App extends Component {
                 {dispatcherTrips.map((trip, i) => {
                     return (
                     <li key={trip.tripId}>{trip.client.name}</li>
+                    )
+                          
+                })}
+                {tripRequests.map((trip, i) => {
+                    return (
+                    <li key={trip.importTripID}>{trip.clientFirstName} {trip.tripStatus}</li>
                     )
                           
                 })}
