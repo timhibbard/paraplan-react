@@ -24,6 +24,55 @@ export class ExampleComponent extends Component {
     }
 }
 
+export function approveRequest(request){
+    var promise = new Promise((resolve, reject) => {
+        var rv = {
+            success: false,
+            errorMessage: '',
+            request: {},
+            stops: [],
+        }
+        let url =
+            request.restUrl +
+            'TripService/ApproveTripRequest?Token=' +
+            request.key +
+            '&Device=' +
+            request.device
+
+        console.log(url)
+
+        fetch(url, {
+            method: 'POST',
+            body: JSON.stringify(request.tripRequest),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(res => res.json())
+            .then(json => {
+                if (json.success === false) {
+                    rv.success = false
+                    rv.errorMessage = json.errorMessage
+                    reject(rv)
+                    return
+                }
+
+                rv.success = true
+                rv.request = json.request
+                rv.stops = json.stops
+                resolve(rv)
+            })
+            .catch(() => {
+                rv.success = false
+                rv.errorMessage = 'Unknown error'
+                reject(rv)
+            })
+    })
+
+    return promise
+}
+
 export function routes(request){
     var promise = new Promise((resolve, reject) => {
         var rv = {
@@ -47,14 +96,17 @@ export function routes(request){
             .then(json => {
                 console.log(json)
                 if (json.success === false) {
+                    rv.success = false
                     rv.errorMessage = json.errorMessage
                     reject(rv)
+                    return
                 }
 
                 rv.success = true
 
                 if (json.list.length === 0) {
                     resolve(rv)
+                    return
                 }
 
                 rv.routes = json.list
@@ -84,7 +136,7 @@ export function tripRequests(request) {
             request.key +
             '&Device=' +
             request.device + 
-            '&TripSource=any&TripStatus=all&'
+            '&TripSource=any&TripStatus=all' +
             '&DateRangeStart=' +
             request.startDateTime +
             '&DateRangeEnd=' +
@@ -98,16 +150,17 @@ export function tripRequests(request) {
                     rv.success = false
                     rv.errorMessage = json.errorMessage
                     reject(rv)
+                    return
                 }
 
                 console.log(json)
 
+                rv.success = true
                 rv.requests = json.list
 
                 resolve(rv)
             })
             .catch(() => {
-                console.log('unknown error')
                 rv.success = false
                 rv.errorMessage = 'Unknown error'
                 reject(rv)
@@ -152,16 +205,14 @@ export function trips(request){
                     rv.success = false
                     rv.errorMessage = json.errorMessage
                     reject(rv)
+                    return
                 }
-
-                console.log(json)
-
+                rv.success = true
                 rv.trips = json.list
 
                 resolve(rv)
             })
             .catch(() => {
-                console.log('unknown error')
                 rv.success = false
                 rv.errorMessage = 'Unknown error'
                 reject(rv)
@@ -184,22 +235,27 @@ export function login(user) {
         if (isNullOrUndefined(user.email) || user.email === '') {
             rv.errorMessage = 'Please populate .email'
             reject(rv)
+            return
         }
         if (isNullOrUndefined(user.password) || user.password === '') {
             rv.errorMessage = 'Please populate .password'
             reject(rv)
+            return
         }
         if (isNullOrUndefined(user.device) || user.device === '') {
             rv.errorMessage = 'Please populate .device'
             reject(rv)
+            return
         }
         if (isNullOrUndefined(user.version) || user.version === '') {
             rv.errorMessage = 'Please populate .version'
             reject(rv)
+            return
         }
         if (isNullOrUndefined(user.utcOffset) || user.utcOffset === '') {
             rv.errorMessage = 'Please populate .utcOffset'
             reject(rv)
+            return
         }
 
         var url =
@@ -226,6 +282,7 @@ export function login(user) {
                     rv.success = false
                     rv.errorMessage = json.errorMessage
                     reject(rv)
+                    return
                 }
 
                 if (json.PPPAccess !== 1) {
@@ -233,13 +290,12 @@ export function login(user) {
                     rv.success = false
                     rv.errorMessage = 'Portal access is not available'
                     reject(rv)
+                    return
                 }
 
-                console.log(json)
                 resolve(json)
             })
             .catch(() => {
-                console.log('unknown error')
                 rv.success = false
                 rv.errorMessage = 'Unknown error'
                 reject(rv)

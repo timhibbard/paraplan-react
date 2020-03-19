@@ -1,8 +1,15 @@
 import React, { Component } from 'react'
 import momenttz from 'moment-timezone'
+import moment from 'moment'
 import dateFormat from 'dateformat'
 
-import { login, routes, trips, tripRequests } from 'paraplan-react'
+import {
+    login,
+    routes,
+    trips,
+    tripRequests,
+    approveRequest,
+} from 'paraplan-react'
 
 export default class App extends Component {
     constructor(props) {
@@ -15,8 +22,8 @@ export default class App extends Component {
             errorMessage: '',
             clientId: '',
             clientCanRequestTrips: false,
-            requestEmail: '',
-            requestPassword: '',
+            requestEmail: 'timhibbard@engraph.com',
+            requestPassword: 'tim',
             requestUTC: momenttz.tz(momenttz.tz.guess()).utcOffset() / 60,
             requestDevice: 'paraplan-react-example',
             requestVersion: '0.0.2',
@@ -35,6 +42,41 @@ export default class App extends Component {
         this.state = this.initialState
 
         this.handleChange = this.handleChange.bind(this)
+    }
+
+    approveTripRequest(request) {
+        const {
+            key,
+            restUrl,
+            requestDevice,
+        } = this.state
+
+        var requestObject = {
+            key: key,
+            restUrl: restUrl,
+            device: requestDevice,
+            tripRequest: request
+        }        
+
+        approveRequest(requestObject)
+            .then(response => {
+                var tripStatus = response.request.tripStatus
+                var importTripID = response.request.importTripID
+                this.setState({
+                    success: response.success,
+                    tripRequests: this.state.tripRequests.map(el =>
+                        el.importTripID === importTripID
+                            ? { ...el,  tripStatus}
+                            : el
+                    )
+                })
+            })
+            .catch(reason => {
+                this.setState({
+                    success: reason.success,
+                    errorMessage: reason.errorMessage,
+                })
+            })
     }
 
     showRequests() {
@@ -269,14 +311,22 @@ export default class App extends Component {
                     })}
                     {tripRequests && tripRequests.length
                         ? tripRequests.map((trip, i) => {
-                            return (
-                                <li key={trip.importTripID}>
-                                    {trip.clientFirstName} {trip.tripStatus}
-                                </li>
-                            )
-                        })
+                              return (
+                                  <li key={trip.importTripID}>
+                                      {trip.clientFirstName} {trip.tripStatus}{' '}
+                                      {moment
+                                          .unix(trip.pickUpTimeEpoch)
+                                          .format('ll')}
+                                      <button
+                                          style={buttonStyle}
+                                          onClick={() => this.approveTripRequest(trip)}
+                                      >
+                                          Approve
+                                      </button>
+                                  </li>
+                              )
+                          })
                         : ''}
-                    
                 </ul>
             </React.Fragment>
         )
