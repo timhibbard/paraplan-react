@@ -111,8 +111,8 @@ viewTodaysTripRequests() {
     restUrl: '<from login>',
     key: '<from login>',
     device: 'connect-web',
-    startTime: new Date(new Date().setHours(0, 0, 0, 0)).getTime() / 1000,
-    endTime: new Date(new Date().setHours(24, 0, 0, 0)).getTime() / 1000,
+    startDateTime: new Date(new Date().setHours(0, 0, 0, 0)).getTime() / 1000,
+    endDateTime: new Date(new Date().setHours(24, 0, 0, 0)).getTime() / 1000,
   }
   tripRequests(request).then(response => {
       this.setState({
