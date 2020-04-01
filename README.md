@@ -130,9 +130,9 @@ viewTodaysTripRequests() {
 }
 ```
 
-## Approving Trips Requests
+## Managing Trips Requests
 
-```trip requests
+```approve request
 import { approveRequest } from 'paraplan-react'
 
 approveTripRequest() {
@@ -166,9 +166,44 @@ approveTripRequest() {
     }
 ```
 
+```reject request
+import { rejectRequest } from 'paraplan-react'
+
+rejectTripRequest() {
+
+        var request = {
+            restUrl: '<from login>',
+            key: '<from login>',
+            device: 'connect-web',
+            tripRequest: <trip request to reject>,
+            rejectReason: <reason trip is being rejected>
+        }
+
+        rejectRequest(request)
+            .then(response => {
+                var tripStatus = response.request.tripStatus
+                var importTripID = response.request.importTripID
+                this.setState({
+                    success: response.success,
+                    tripRequests: this.state.tripRequests.map(el =>
+                        el.importTripID === importTripID
+                            ? { ...el,  tripStatus}
+                            : el
+                    )
+                })
+            })
+            .catch(reason => {
+                this.setState({
+                    success: reason.success,
+                    errorMessage: reason.errorMessage,
+                })
+            })
+    }
+```
+
 - While `request.tripRequest` will take the entire trip request. It only needs to have `.importTripID` populated. It will ignore all other fields and build the object on the server fresh from the database.
 - In the return object, `request` will have the most up to date version of the trip request.
-- Also, the return object will contain `stops`, which is an array of `Stop`. Appending existing stop arrays with this data will save a round trip to the server.
+- Also, the return object of approve will contain `stops`, which is an array of `Stop`. Appending existing stop arrays with this data will save a round trip to the server.
 - Since we are dealing with trip requests and http requests, you might want to rename your variables to avoid confusion. 
 
 

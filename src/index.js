@@ -74,6 +74,57 @@ export function approveRequest(request){
     return promise
 }
 
+export function rejectRequest(request){
+    var promise = new Promise((resolve, reject) => {
+        var rv = {
+            success: false,
+            errorMessage: '',
+            request: {},
+        }
+        let url =
+            request.restUrl +
+            'TripService/RejectTripRequest?Token=' +
+            request.key +
+            '&Device=' +
+            request.device + 
+            '&Reason=' +
+            encodeURIComponent(request.rejectReason) +
+            '&NotifyRider=true'
+
+        console.log(url)
+
+        fetch(url, {
+            method: 'POST',
+            body: JSON.stringify(request.tripRequest),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(res => res.json())
+            .then(json => {
+                if (json.success === false) {
+                    rv.success = false
+                    rv.errorMessage = json.errorMessage
+                    reject(rv)
+                    return
+                }
+
+                rv.success = true
+                rv.request = json.entity
+                resolve(rv)
+            })
+            .catch((error) => {
+                rv.success = false
+                console.log(error)
+                rv.errorMessage = 'Unknown error'
+                reject(rv)
+            })
+    })
+
+    return promise
+}
+
 export function routes(request){
     var promise = new Promise((resolve, reject) => {
         var rv = {

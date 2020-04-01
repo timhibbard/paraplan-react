@@ -9,6 +9,7 @@ import {
     trips,
     tripRequests,
     approveRequest,
+    rejectRequest,
 } from 'paraplan-react'
 
 export default class App extends Component {
@@ -63,6 +64,43 @@ export default class App extends Component {
                 var tripStatus = response.request.tripStatus
                 var importTripID = response.request.importTripID
                 console.log(response.stops)
+                this.setState({
+                    success: response.success,
+                    tripRequests: this.state.tripRequests.map(el =>
+                        el.importTripID === importTripID
+                            ? { ...el,  tripStatus}
+                            : el
+                    )
+                })
+            })
+            .catch(reason => {
+                this.setState({
+                    success: reason.success,
+                    errorMessage: reason.errorMessage,
+                })
+            })
+    }
+
+    rejectTripRequest(request) {
+        const {
+            key,
+            restUrl,
+            requestDevice,
+        } = this.state
+
+        var requestObject = {
+            key: key,
+            restUrl: restUrl,
+            device: requestDevice,
+            tripRequest: request,
+            rejectReason: 'Overcapacity and something else'
+        }        
+
+        rejectRequest(requestObject)
+            .then(response => {
+                var tripStatus = response.request.tripStatus
+                var importTripID = response.request.importTripID
+                console.log(response.request)
                 this.setState({
                     success: response.success,
                     tripRequests: this.state.tripRequests.map(el =>
@@ -323,6 +361,12 @@ export default class App extends Component {
                                           onClick={() => this.approveTripRequest(trip)}
                                       >
                                           Approve
+                                      </button>
+                                      <button
+                                          style={buttonStyle}
+                                          onClick={() => this.rejectTripRequest(trip)}
+                                      >
+                                          Reject
                                       </button>
                                   </li>
                               )
