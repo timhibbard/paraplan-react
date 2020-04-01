@@ -33,7 +33,7 @@ export default class App extends Component {
             tripStartDate:
                 new Date(new Date().setHours(0, 0, 0, 0)).getTime() / 1000,
             tripEndDate:
-                new Date(new Date().setHours(24, 0, 0, 0)).getTime() / 1000,
+                new Date(new Date().setHours(48, 0, 0, 0)).getTime() / 1000,
             routes: [],
             dispatcherTrips: [],
             tripRequests: [],
@@ -62,6 +62,7 @@ export default class App extends Component {
             .then(response => {
                 var tripStatus = response.request.tripStatus
                 var importTripID = response.request.importTripID
+                console.log(response.stops)
                 this.setState({
                     success: response.success,
                     tripRequests: this.state.tripRequests.map(el =>

@@ -63,8 +63,9 @@ export function approveRequest(request){
                 rv.stops = json.stops
                 resolve(rv)
             })
-            .catch(() => {
+            .catch((error) => {
                 rv.success = false
+                console.log(error)
                 rv.errorMessage = 'Unknown error'
                 reject(rv)
             })
