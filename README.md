@@ -137,33 +137,33 @@ import { approveRequest } from 'paraplan-react'
 
 approveTripRequest() {
 
-        var request = {
-            restUrl: '<from login>',
-            key: '<from login>',
-            device: 'connect-web',
-            tripRequest: <trip request to approve>
-        }
-
-        approveRequest(request)
-            .then(response => {
-                var tripStatus = response.request.tripStatus
-                var importTripID = response.request.importTripID
-                this.setState({
-                    success: response.success,
-                    tripRequests: this.state.tripRequests.map(el =>
-                        el.importTripID === importTripID
-                            ? { ...el,  tripStatus}
-                            : el
-                    )
-                })
-            })
-            .catch(reason => {
-                this.setState({
-                    success: reason.success,
-                    errorMessage: reason.errorMessage,
-                })
-            })
+    var request = {
+        restUrl: '<from login>',
+        key: '<from login>',
+        device: 'connect-web',
+        tripRequest: <trip request to approve>
     }
+
+    approveRequest(request)
+        .then(response => {
+            var tripStatus = response.request.tripStatus
+            var importTripID = response.request.importTripID
+            this.setState({
+                success: response.success,
+                tripRequests: this.state.tripRequests.map(el =>
+                    el.importTripID === importTripID
+                        ? { ...el,  tripStatus}
+                        : el
+                )
+            })
+        })
+        .catch(reason => {
+            this.setState({
+                success: reason.success,
+                errorMessage: reason.errorMessage,
+            })
+        })
+}
 ```
 
 ```reject request
@@ -171,34 +171,34 @@ import { rejectRequest } from 'paraplan-react'
 
 rejectTripRequest() {
 
-        var request = {
-            restUrl: '<from login>',
-            key: '<from login>',
-            device: 'connect-web',
-            tripRequest: <trip request to reject>,
-            rejectReason: <reason trip is being rejected>
-        }
-
-        rejectRequest(request)
-            .then(response => {
-                var tripStatus = response.request.tripStatus
-                var importTripID = response.request.importTripID
-                this.setState({
-                    success: response.success,
-                    tripRequests: this.state.tripRequests.map(el =>
-                        el.importTripID === importTripID
-                            ? { ...el,  tripStatus}
-                            : el
-                    )
-                })
-            })
-            .catch(reason => {
-                this.setState({
-                    success: reason.success,
-                    errorMessage: reason.errorMessage,
-                })
-            })
+    var request = {
+        restUrl: '<from login>',
+        key: '<from login>',
+        device: 'connect-web',
+        tripRequest: <trip request to reject>,
+        rejectReason: <reason trip is being rejected>
     }
+
+    rejectRequest(request)
+        .then(response => {
+            var tripStatus = response.request.tripStatus
+            var importTripID = response.request.importTripID
+            this.setState({
+                success: response.success,
+                tripRequests: this.state.tripRequests.map(el =>
+                    el.importTripID === importTripID
+                        ? { ...el,  tripStatus}
+                        : el
+                )
+            })
+        })
+        .catch(reason => {
+            this.setState({
+                success: reason.success,
+                errorMessage: reason.errorMessage,
+            })
+        })
+}
 ```
 
 - While `request.tripRequest` will take the entire trip request. It only needs to have `.importTripID` populated. It will ignore all other fields and build the object on the server fresh from the database.
@@ -206,6 +206,80 @@ rejectTripRequest() {
 - Also, the return object of approve will contain `stops`, which is an array of `Stop`. Appending existing stop arrays with this data will save a round trip to the server.
 - Since we are dealing with trip requests and http requests, you might want to rename your variables to avoid confusion. 
 
+
+## Scheduling trips to routes
+
+```assign to route
+import { scheduleTrip } from 'paraplan-react'
+
+scheduleTripToRoute(trip, fleetmanager) {
+
+    var request = {
+        key: <from login>,
+        restUrl: <from login>,
+        device: 'connect-web',
+        fleetManagerId: <fleetmanager ID to assign to>,
+        trip: <trip to assign. Only .tripId needed>
+    }
+
+    scheduleTrip(request)
+        .then(response => {
+            var tripId = response.trip.tripId
+            var fleetmanager = response.trip.fleetmanager
+
+            this.setState({
+                success: response.success,
+                dispatcherTrips: this.state.dispatcherTrips.map(el =>
+                    el.tripId === tripId
+                        ? { ...el, fleetmanager }
+                        : el
+                ),
+            })
+        })
+        .catch(reason => {
+            this.setState({
+                success: reason.success,
+                errorMessage: reason.errorMessage,
+            })
+        })
+}
+```
+
+```unschedule
+import { unscheduleTrip } from 'paraplan-react'
+unscheduleTrip() {
+    var request = {
+        key: <from login>,
+        restUrl: <from login>,
+        device: 'connect-web',
+        trip: <trip to assign. Only .tripId needed>
+    }
+
+    unscheduleTrip(request)
+        .then(response => {
+            var tripId = response.trip.tripId
+            var fleetmanager = response.trip.fleetmanager
+
+            console.log(response.trip)
+
+            this.setState({
+                success: response.success,
+                dispatcherTrips: this.state.dispatcherTrips.map(el =>
+                    el.tripId === tripId
+                        ? { ...el, fleetmanager }
+                        : el
+                ),
+            })
+        })
+        .catch(reason => {
+            this.setState({
+                success: reason.success,
+                errorMessage: reason.errorMessage,
+            })
+        })
+}
+
+```
 
 
 ## License

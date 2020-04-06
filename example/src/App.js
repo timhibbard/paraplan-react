@@ -10,6 +10,8 @@ import {
     tripRequests,
     approveRequest,
     rejectRequest,
+    scheduleTrip,
+    unscheduleTrip,
 } from 'paraplan-react'
 
 export default class App extends Component {
@@ -45,32 +47,100 @@ export default class App extends Component {
         this.handleChange = this.handleChange.bind(this)
     }
 
+    schedule(trip, fleetmanager) {
+        const { key, restUrl, requestDevice } = this.state
+        var requestObject = {
+            key: key,
+            restUrl: restUrl,
+            device: requestDevice,
+            fleetManagerId: fleetmanager.fleetmanagerID,
+            trip: trip
+        }
+
+        console.log(requestObject)
+
+        scheduleTrip(requestObject)
+            .then(response => {
+                var tripId = response.trip.tripId
+                var fleetmanager = response.trip.fleetmanager
+
+                console.log(response.trip)
+
+                this.setState({
+                    success: response.success,
+                    dispatcherTrips: this.state.dispatcherTrips.map(el =>
+                        el.tripId === tripId
+                            ? { ...el, fleetmanager }
+                            : el
+                    ),
+                })
+            })
+            .catch(reason => {
+                this.setState({
+                    success: reason.success,
+                    errorMessage: reason.errorMessage,
+                })
+            })
+    }
+
+    unschedule(trip) {
+        const { key, restUrl, requestDevice } = this.state
+        var requestObject = {
+            key: key,
+            restUrl: restUrl,
+            device: requestDevice,
+            trip: trip
+        }
+
+        console.log(requestObject)
+
+        unscheduleTrip(requestObject)
+            .then(response => {
+                var tripId = response.trip.tripId
+                var fleetmanager = response.trip.fleetmanager
+
+                console.log(response.trip)
+
+                this.setState({
+                    success: response.success,
+                    dispatcherTrips: this.state.dispatcherTrips.map(el =>
+                        el.tripId === tripId
+                            ? { ...el, fleetmanager }
+                            : el
+                    ),
+                })
+            })
+            .catch(reason => {
+                this.setState({
+                    success: reason.success,
+                    errorMessage: reason.errorMessage,
+                })
+            })
+    }
+
     approveTripRequest(request) {
-        const {
-            key,
-            restUrl,
-            requestDevice,
-        } = this.state
+        const { key, restUrl, requestDevice } = this.state
 
         var requestObject = {
             key: key,
             restUrl: restUrl,
             device: requestDevice,
-            tripRequest: request
-        }        
+            tripRequest: request,
+        }
 
         approveRequest(requestObject)
             .then(response => {
                 var tripStatus = response.request.tripStatus
                 var importTripID = response.request.importTripID
                 console.log(response.stops)
+                console.log(response.request)
                 this.setState({
                     success: response.success,
                     tripRequests: this.state.tripRequests.map(el =>
                         el.importTripID === importTripID
-                            ? { ...el,  tripStatus}
+                            ? { ...el, tripStatus }
                             : el
-                    )
+                    ),
                 })
             })
             .catch(reason => {
@@ -82,19 +152,15 @@ export default class App extends Component {
     }
 
     rejectTripRequest(request) {
-        const {
-            key,
-            restUrl,
-            requestDevice,
-        } = this.state
+        const { key, restUrl, requestDevice } = this.state
 
         var requestObject = {
             key: key,
             restUrl: restUrl,
             device: requestDevice,
             tripRequest: request,
-            rejectReason: 'Overcapacity and something else'
-        }        
+            rejectReason: 'Overcapacity and something else',
+        }
 
         rejectRequest(requestObject)
             .then(response => {
@@ -105,9 +171,9 @@ export default class App extends Component {
                     success: response.success,
                     tripRequests: this.state.tripRequests.map(el =>
                         el.importTripID === importTripID
-                            ? { ...el,  tripStatus}
+                            ? { ...el, tripStatus }
                             : el
-                    )
+                    ),
                 })
             })
             .catch(reason => {
@@ -163,6 +229,7 @@ export default class App extends Component {
             tripEndDate,
         } = this.state
 
+
         var request = {
             key: key,
             restUrl: restUrl,
@@ -170,6 +237,8 @@ export default class App extends Component {
             startTime: tripStartDate,
             endTime: tripEndDate,
         }
+
+        this.collectRoutes()
 
         trips(request)
             .then(response => {
@@ -346,7 +415,25 @@ export default class App extends Component {
                         )
                     })}
                     {dispatcherTrips.map((trip, i) => {
-                        return <li key={trip.tripId}>{trip.client.name}</li>
+                        return (
+                            <li key={trip.tripId}>
+                                {trip.client.name}:{' '}
+                                {trip.fleetmanager.routeName === '' ? 'No Assigned Route' : trip.fleetmanager.routeName}
+                                <button style={buttonStyle}
+                                onClick={() => this.unschedule(trip)}
+                                >Unschedule</button>
+                                {routes.map((route, i) => {
+                                    return (
+                                        <button style={buttonStyle}
+                                        key={route.fleetmanagerID}
+                                        onClick={() => this.schedule(trip,route)}>
+                                            Assign to {route.routeName} (
+                                            {route.fleetmanagerID})
+                                        </button>
+                                    )
+                                })}
+                            </li>
+                        )
                     })}
                     {tripRequests && tripRequests.length
                         ? tripRequests.map((trip, i) => {
@@ -358,13 +445,17 @@ export default class App extends Component {
                                           .format('ll')}
                                       <button
                                           style={buttonStyle}
-                                          onClick={() => this.approveTripRequest(trip)}
+                                          onClick={() =>
+                                              this.approveTripRequest(trip)
+                                          }
                                       >
                                           Approve
                                       </button>
                                       <button
                                           style={buttonStyle}
-                                          onClick={() => this.rejectTripRequest(trip)}
+                                          onClick={() =>
+                                              this.rejectTripRequest(trip)
+                                          }
                                       >
                                           Reject
                                       </button>
