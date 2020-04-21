@@ -24,6 +24,47 @@ export class ExampleComponent extends Component {
     }
 }
 
+export function config(request){
+    var promise = new Promise((resolve, reject) => {
+        var rv = {
+            success: false,
+            errorMessage: '',
+            config: {},
+        }
+        let url =
+            request.restUrl +
+            'UserService/Config?Token=' +
+            request.key +
+            '&Device=' +
+            request.device
+
+        console.log(url)
+
+        fetch(url)
+            .then(res => res.json())
+            .then(json => {
+                if (json.success === false) {
+                    rv.success = false
+                    rv.errorMessage = json.errorMessage
+                    reject(rv)
+                    return
+                }
+
+                rv.success = true
+                rv.config = json.entity
+                resolve(rv)
+            })
+            .catch((error) => {
+                rv.success = false
+                console.log(error)
+                rv.errorMessage = 'Unknown error'
+                reject(rv)
+            })
+    })
+
+    return promise
+}
+
 export function approveRequest(request){
     var promise = new Promise((resolve, reject) => {
         var rv = {

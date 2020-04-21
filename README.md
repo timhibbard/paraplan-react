@@ -44,6 +44,32 @@ loginToAPI() {
 }
 ```
 
+## Configuration Options (Filespecs)
+```config
+import { config } from 'paraplan-react'
+getConfig(){
+        var request = {
+            restUrl: '<from login>',
+            key: '<from login>',
+            device: 'connect-web',
+        }
+        config(request)
+            .then(response => {
+                this.setState({
+                    success: response.success,
+                    config: response.config,
+                })
+            })
+            .catch(reason => {
+                this.setState({
+                    success: reason.success,
+                    errorMessage: reason.errorMessage,
+                })
+            })
+    }
+
+```
+
 ## Routes (FleetManagers)
 
 ```routes

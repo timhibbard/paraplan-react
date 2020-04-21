@@ -12,6 +12,7 @@ import {
     rejectRequest,
     scheduleTrip,
     unscheduleTrip,
+    config
 } from 'paraplan-react'
 
 export default class App extends Component {
@@ -40,6 +41,7 @@ export default class App extends Component {
             routes: [],
             dispatcherTrips: [],
             tripRequests: [],
+            config: {},
         }
 
         this.state = this.initialState
@@ -279,6 +281,28 @@ export default class App extends Component {
             })
     }
 
+    getConfig(){
+        const { key, restUrl, requestDevice } = this.state
+        var request = {
+            key: key,
+            restUrl: restUrl,
+            device: requestDevice,
+        }
+        config(request)
+            .then(response => {
+                this.setState({
+                    success: response.success,
+                    config: response.config,
+                })
+            })
+            .catch(reason => {
+                this.setState({
+                    success: reason.success,
+                    errorMessage: reason.errorMessage,
+                })
+            })
+    }
+
     loginToAPI() {
         const {
             requestEmail,
@@ -333,6 +357,7 @@ export default class App extends Component {
             routes,
             dispatcherTrips,
             tripRequests,
+            config
         } = this.state
 
         const labelStyle = {
@@ -406,6 +431,12 @@ export default class App extends Component {
                 <button style={buttonStyle} onClick={() => this.showRequests()}>
                     Get Requests
                 </button>
+                <button style={buttonStyle} onClick={() => this.getConfig()}>
+                    Get Config
+                </button>
+                {config ? (
+                    <div><pre>{ JSON.stringify(config, null, 2) }</pre></div>
+                ) : ''}
                 <ul>
                     {routes.map((route, i) => {
                         return (
