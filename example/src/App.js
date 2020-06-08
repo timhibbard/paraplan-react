@@ -63,8 +63,8 @@ export default class App extends Component {
 
         scheduleTrip(requestObject)
             .then(response => {
-                var tripId = response.trip.tripId
-                var fleetmanager = response.trip.fleetmanager
+                var tripId = response.entity.tripId
+                var fleetmanager = response.entity.fleetmanager
 
                 console.log(response.trip)
 
@@ -98,8 +98,8 @@ export default class App extends Component {
 
         unscheduleTrip(requestObject)
             .then(response => {
-                var tripId = response.trip.tripId
-                var fleetmanager = response.trip.fleetmanager
+                var tripId = response.entity.tripId
+                var fleetmanager = response.entity.fleetmanager
 
                 console.log(response.trip)
 
@@ -166,9 +166,8 @@ export default class App extends Component {
 
         rejectRequest(requestObject)
             .then(response => {
-                var tripStatus = response.request.tripStatus
-                var importTripID = response.request.importTripID
-                console.log(response.request)
+                var tripStatus = response.entity.tripStatus
+                var importTripID = response.entity.importTripID
                 this.setState({
                     success: response.success,
                     tripRequests: this.state.tripRequests.map(el =>
@@ -211,7 +210,7 @@ export default class App extends Component {
                 console.log(response)
                 this.setState({
                     success: response.success,
-                    tripRequests: response.requests,
+                    tripRequests: response.list,
                 })
             })
             .catch(reason => {
@@ -246,7 +245,7 @@ export default class App extends Component {
             .then(response => {
                 this.setState({
                     success: response.success,
-                    dispatcherTrips: response.trips,
+                    dispatcherTrips: response.list,
                 })
             })
             .catch(reason => {
@@ -270,7 +269,7 @@ export default class App extends Component {
             .then(response => {
                 this.setState({
                     success: response.success,
-                    routes: response.routes,
+                    routes: response.list,
                 })
             })
             .catch(reason => {
@@ -292,7 +291,7 @@ export default class App extends Component {
             .then(response => {
                 this.setState({
                     success: response.success,
-                    config: response.config,
+                    config: response.entity,
                 })
             })
             .catch(reason => {
@@ -441,7 +440,7 @@ export default class App extends Component {
                     {routes.map((route, i) => {
                         return (
                             <li key={route.fleetmanagerID}>
-                                {route.routeName}
+                                {route.routeName}{route.gps ? ' GPS: ' + route.gps.lat + ', ' + route.gps.lng : ''}
                             </li>
                         )
                     })}

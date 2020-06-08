@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import { isNullOrUndefined } from 'util'
 import shajs from '../node_modules/sha.js'
 
+//This is written based on guidelines from:
+//https://github.com/transitive-bullshit/create-react-library#readme
 
 export class ExampleComponent extends Component {
     static propTypes = {
@@ -23,13 +25,16 @@ export class ExampleComponent extends Component {
         return 'hello'
     }
 }
-
+// - [x] Standerize return object
+// - [x] Update documentation
+// - [ ] Remove proper return type after August 1
 export function config(request){
     var promise = new Promise((resolve, reject) => {
         var rv = {
             success: false,
             errorMessage: '',
             config: {},
+            entity: {},
         }
         let url =
             request.restUrl +
@@ -52,6 +57,7 @@ export function config(request){
 
                 rv.success = true
                 rv.config = json.entity
+                rv.entity = json.entity
                 resolve(rv)
             })
             .catch((error) => {
@@ -114,13 +120,16 @@ export function approveRequest(request){
 
     return promise
 }
-
+// - [x] Standerize return object
+// - [x] Update documentation
+// - [ ] Remove proper return type after August 1
 export function scheduleTrip(request){
     var promise = new Promise((resolve, reject) => {
         var rv = {
             success: false,
             errorMessage: '',
             trip: {},
+            entity: {},
         }
         let url =
             request.restUrl +
@@ -152,6 +161,7 @@ export function scheduleTrip(request){
 
                 rv.success = true
                 rv.trip = json.entity
+                rv.entity = json.entity
                 resolve(rv)
             })
             .catch((error) => {
@@ -165,12 +175,16 @@ export function scheduleTrip(request){
     return promise
 }
 
+// - [x] Standerize return object
+// - [x] Update documentation
+// - [ ] Remove proper return type after August 1
 export function unscheduleTrip(request){
     var promise = new Promise((resolve, reject) => {
         var rv = {
             success: false,
             errorMessage: '',
             trip: {},
+            entity: {},
         }
         let url =
             request.restUrl +
@@ -213,12 +227,16 @@ export function unscheduleTrip(request){
     return promise
 }
 
+// - [x] Standerize return object
+// - [x] Update documentation
+// - [ ] Remove proper return type after August 1
 export function rejectRequest(request){
     var promise = new Promise((resolve, reject) => {
         var rv = {
             success: false,
             errorMessage: '',
             request: {},
+            entity: {},
         }
         let url =
             request.restUrl +
@@ -251,6 +269,7 @@ export function rejectRequest(request){
 
                 rv.success = true
                 rv.request = json.entity
+                rv.entity = json.entity
                 resolve(rv)
             })
             .catch((error) => {
@@ -264,12 +283,16 @@ export function rejectRequest(request){
     return promise
 }
 
+// - [x] Standerize return object
+// - [x] Update documentation
+// - [ ] Remove proper return type after August 1
 export function routes(request){
     var promise = new Promise((resolve, reject) => {
         var rv = {
             success: false,
             errorMessage: '',
-            routes: []
+            routes: [],
+            list: [],
         }
         let url =
             request.restUrl +
@@ -301,6 +324,7 @@ export function routes(request){
                 }
 
                 rv.routes = json.list
+                rv.list = json.list
                 resolve(rv)
             })
             .catch(() => {
@@ -313,12 +337,16 @@ export function routes(request){
     return promise
 }
 
+// - [x] Standerize return object
+// - [x] Update documentation
+// - [ ] Remove proper return type after August 1
 export function tripRequests(request) {
     var promise = new Promise((resolve, reject) => {
         var rv = {
             success: false,
             errorMessage: '',
             requests: [],
+            list: [],
         }
 
         var url =
@@ -348,6 +376,7 @@ export function tripRequests(request) {
 
                 rv.success = true
                 rv.requests = json.list
+                rv.list = json.list
 
                 resolve(rv)
             })
@@ -362,12 +391,16 @@ export function tripRequests(request) {
     return promise
 }
 
+// - [x] Standerize return object
+// - [x] Update documentation
+// - [ ] Remove proper return type after August 1
 export function trips(request){
     var promise = new Promise((resolve, reject) => {
         var rv = {
             success: false,
             errorMessage: '',
             trips: [],
+            list: [],
         }
 
         //request
@@ -400,6 +433,7 @@ export function trips(request){
                 }
                 rv.success = true
                 rv.trips = json.list
+                rv.list = json.list
 
                 resolve(rv)
             })
@@ -485,6 +519,225 @@ export function login(user) {
                 }
 
                 resolve(json)
+            })
+            .catch(() => {
+                rv.success = false
+                rv.errorMessage = 'Unknown error'
+                reject(rv)
+        })
+    })
+
+    return promise
+}
+
+// - [ ] Need to document
+export function clientSearch(request){
+    var promise = new Promise((resolve, reject) => {
+        var rv = {
+            success: false,
+            errorMessage: '',
+            list: [],
+        }
+        var url =
+            request.restUrl +  
+            'ClientService/Search/?Token=' +
+            request.key +
+            '&Device=' +
+            request.device + 
+            '&Value=' +
+            request.search
+        console.log(url)
+
+        fetch(url)
+            .then(res => res.json())
+            .then(json => {
+                if (json.success === false) {
+                    rv.success = false
+                    rv.errorMessage = json.errorMessage
+                    reject(rv)
+                    return
+                }
+
+                console.log(json)
+
+                rv.success = true
+                rv.list = json.list
+
+                resolve(rv)
+            })
+            .catch(() => {
+                rv.success = false
+                rv.errorMessage = 'Unknown error'
+                reject(rv)
+        })
+    })
+
+    return promise
+}
+
+// - [ ] Need to document
+export function programs(request){
+    var promise = new Promise((resolve, reject) => {
+        var rv = {
+            success: false,
+            errorMessage: '',
+            list: [],
+        }
+        var url =
+            request.restUrl +  
+            'ProgramService/Programs/?Token=' +
+            request.key +
+            '&Device=' +
+            request.device 
+        console.log(url)
+
+        fetch(url)
+            .then(res => res.json())
+            .then(json => {
+                if (json.success === false) {
+                    rv.success = false
+                    rv.errorMessage = json.errorMessage
+                    reject(rv)
+                    return
+                }
+
+                console.log(json)
+
+                rv.success = true
+                rv.list = json.list
+
+                resolve(rv)
+            })
+            .catch(() => {
+                rv.success = false
+                rv.errorMessage = 'Unknown error'
+                reject(rv)
+        })
+    })
+
+    return promise
+}
+
+// - [ ] Need to document
+export function placeSearch(request){
+    var promise = new Promise((resolve, reject) => {
+        var rv = {
+            success: false,
+            errorMessage: '',
+            list: [],
+        }
+        var url =
+            request.restUrl +  
+            'PlaceService/Search/?Token=' +
+            request.key +
+            '&Device=' +
+            request.device + 
+            '&Value=' +
+            request.search
+        console.log(url)
+
+        fetch(url)
+            .then(res => res.json())
+            .then(json => {
+                if (json.success === false) {
+                    rv.success = false
+                    rv.errorMessage = json.errorMessage
+                    reject(rv)
+                    return
+                }
+
+                console.log(json)
+
+                rv.success = true
+                rv.list = json.list
+
+                resolve(rv)
+            })
+            .catch(() => {
+                rv.success = false
+                rv.errorMessage = 'Unknown error'
+                reject(rv)
+        })
+    })
+
+    return promise
+}
+
+// - [ ] Need to document
+export function placesOnDemand(request){
+    var promise = new Promise((resolve, reject) => {
+        var rv = {
+            success: false,
+            errorMessage: '',
+            list: [],
+        }
+        var url =
+            request.restUrl +  
+            'PlaceService/OnDemand/?Token=' +
+            request.key +
+            '&Device=' +
+            request.device
+        console.log(url)
+
+        fetch(url)
+            .then(res => res.json())
+            .then(json => {
+                if (json.success === false) {
+                    rv.success = false
+                    rv.errorMessage = json.errorMessage
+                    reject(rv)
+                    return
+                }
+
+                console.log(json)
+
+                rv.success = true
+                rv.list = json.list
+
+                resolve(rv)
+            })
+            .catch(() => {
+                rv.success = false
+                rv.errorMessage = 'Unknown error'
+                reject(rv)
+        })
+    })
+
+    return promise
+}
+
+// - [ ] Need to document
+export function purposes(request){
+    var promise = new Promise((resolve, reject) => {
+        var rv = {
+            success: false,
+            errorMessage: '',
+            list: [],
+        }
+        var url =
+            request.restUrl +  
+            'TripPurposeService/Purposes/?Token=' +
+            request.key +
+            '&Device=' +
+            request.device
+        console.log(url)
+
+        fetch(url)
+            .then(res => res.json())
+            .then(json => {
+                if (json.success === false) {
+                    rv.success = false
+                    rv.errorMessage = json.errorMessage
+                    reject(rv)
+                    return
+                }
+
+                console.log(json)
+
+                rv.success = true
+                rv.list = json.list
+
+                resolve(rv)
             })
             .catch(() => {
                 rv.success = false

@@ -57,7 +57,7 @@ getConfig(){
             .then(response => {
                 this.setState({
                     success: response.success,
-                    config: response.config,
+                    config: response.entity,
                 })
             })
             .catch(reason => {
@@ -79,14 +79,14 @@ viewTodaysRoutes() {
   var request = {
       restUrl: '<from login>',
       key: '<from login>',
-      tripDate: '03-11-2020'
+      tripDate: '06-15-2020'
       device: 'connect-web',
   }
   routes(request).then(response => {
       this.setState({
           success: response.success,
           errorMessage: response.errorMessage,
-          routes: response.routes,
+          routes: response.list,
       })
   })
   .catch((reason) => {
@@ -115,7 +115,7 @@ viewTodaysTrips() {
       this.setState({
           success: response.success,
           errorMessage: response.errorMessage,
-          trips: response.trips,
+          trips: response.list,
       })
   })
   .catch((reason) => {
@@ -144,7 +144,7 @@ viewTodaysTripRequests() {
       this.setState({
           success: response.success,
           errorMessage: response.errorMessage,
-          requests: response.requests,
+          requests: response.list,
       })
   })
   .catch((reason) => {
@@ -207,8 +207,8 @@ rejectTripRequest() {
 
     rejectRequest(request)
         .then(response => {
-            var tripStatus = response.request.tripStatus
-            var importTripID = response.request.importTripID
+            var tripStatus = response.entity.tripStatus
+            var importTripID = response.entity.importTripID
             this.setState({
                 success: response.success,
                 tripRequests: this.state.tripRequests.map(el =>
@@ -250,8 +250,8 @@ scheduleTripToRoute(trip, fleetmanager) {
 
     scheduleTrip(request)
         .then(response => {
-            var tripId = response.trip.tripId
-            var fleetmanager = response.trip.fleetmanager
+            var tripId = response.entity.tripId
+            var fleetmanager = response.entity.fleetmanager
 
             this.setState({
                 success: response.success,
