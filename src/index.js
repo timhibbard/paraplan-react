@@ -530,7 +530,7 @@ export function login(user) {
     return promise
 }
 
-// - [ ] Need to document
+// - [x] Need to document
 export function clientSearch(request){
     var promise = new Promise((resolve, reject) => {
         var rv = {
@@ -575,7 +575,7 @@ export function clientSearch(request){
     return promise
 }
 
-// - [ ] Need to document
+// - [x] Need to document
 export function programs(request){
     var promise = new Promise((resolve, reject) => {
         var rv = {

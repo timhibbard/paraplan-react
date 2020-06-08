@@ -12,7 +12,10 @@ import {
     rejectRequest,
     scheduleTrip,
     unscheduleTrip,
-    config
+    config,
+    clientSearch,
+    programs,
+    placeSearch,
 } from 'paraplan-react'
 
 export default class App extends Component {
@@ -42,6 +45,11 @@ export default class App extends Component {
             dispatcherTrips: [],
             tripRequests: [],
             config: {},
+            clients: [],
+            clientSearchString: '',
+            programs: [],
+            places: [],
+            placesSearchString: '',
         }
 
         this.state = this.initialState
@@ -302,6 +310,77 @@ export default class App extends Component {
             })
     }
 
+    getClients(){
+        const { key, restUrl, requestDevice, clientSearchString } = this.state
+        var request = {
+            key: key,
+            restUrl: restUrl,
+            device: requestDevice,
+            search: clientSearchString,
+        }
+        clientSearch(request)
+            .then(response => {
+                this.setState({
+                    success: response.success,
+                    clients: response.list,
+                })
+            })
+            .catch(reason => {
+                this.setState({
+                    success: reason.success,
+                    errorMessage: reason.errorMessage,
+                })
+            })
+
+    }
+
+    searchPlaces(){
+        const { key, restUrl, requestDevice, placesSearchString } = this.state
+        var request = {
+            key: key,
+            restUrl: restUrl,
+            device: requestDevice,
+            search: placesSearchString,
+        }
+        placeSearch(request)
+            .then(response => {
+                this.setState({
+                    success: response.success,
+                    places: response.list,
+                })
+            })
+            .catch(reason => {
+                this.setState({
+                    success: reason.success,
+                    errorMessage: reason.errorMessage,
+                })
+            })
+
+    }
+
+    getPrograms() {
+        const { key, restUrl, requestDevice } = this.state
+
+        var request = {
+            key: key,
+            restUrl: restUrl,
+            device: requestDevice,
+        }
+        programs(request)
+            .then(response => {
+                this.setState({
+                    success: response.success,
+                    programs: response.list,
+                })
+            })
+            .catch(reason => {
+                this.setState({
+                    success: reason.success,
+                    errorMessage: reason.errorMessage,
+                })
+            })
+    }
+
     loginToAPI() {
         const {
             requestEmail,
@@ -356,7 +435,10 @@ export default class App extends Component {
             routes,
             dispatcherTrips,
             tripRequests,
-            config
+            config,
+            clients,
+            programs,
+            places,
         } = this.state
 
         const labelStyle = {
@@ -433,10 +515,54 @@ export default class App extends Component {
                 <button style={buttonStyle} onClick={() => this.getConfig()}>
                     Get Config
                 </button>
-                {config ? (
+                <input
+                        style={inputStyle}
+                        type="text"
+                        name="clientSearchString"
+                        value={this.state.clientSearchString}
+                        onChange={this.handleChange}
+                    />
+                <button style={buttonStyle} onClick={() => this.getClients()}>
+                    Search Clients
+                </button>
+                <button style={buttonStyle} onClick={() => this.getPrograms()}>
+                    Show Programs
+                </button>
+                <input
+                        style={inputStyle}
+                        type="text"
+                        name="placesSearchString"
+                        value={this.state.placesSearchString}
+                        onChange={this.handleChange}
+                    />
+                <button style={buttonStyle} onClick={() => this.searchPlaces()}>
+                    Search Places
+                </button>
+                {config && JSON.stringify(config, null, 2) !== '{}' ? (
                     <div><pre>{ JSON.stringify(config, null, 2) }</pre></div>
                 ) : ''}
                 <ul>
+                    {places.map((place, i) => {
+                        return (
+                            <li key={place.databaseID}>
+                                {place.name + ': ' + place.address1}
+                            </li>
+                        )
+                    })}
+                    {programs.map((program, i) => {
+                        return (
+                            <li key={program.databaseID}>
+                                {program.programName + ': ' + program.programDescription}
+                            </li>
+                        )
+                    })}
+                    {clients.map((client, i) => {
+                        return (
+                            <li key={client.id}>
+                                {client.name}{client.email && client.email !== '' ? ' ' + client.email : ''}
+                            </li>
+                        )
+                    })}
                     {routes.map((route, i) => {
                         return (
                             <li key={route.fleetmanagerID}>

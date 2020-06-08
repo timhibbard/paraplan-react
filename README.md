@@ -308,6 +308,102 @@ unscheduleTrip() {
 ```
 
 
+## Searching for clients
+
+```clientSearch
+import { clientSearch } from 'paraplan-react'
+
+searchClients(){
+    const { key, restUrl, requestDevice, clientSearchString } = this.state
+    var request = {
+        key: key,
+        restUrl: restUrl,
+        device: requestDevice,
+        search: clientSearchString,
+    }
+    
+    clientSearch(request)
+        .then(response => {
+            this.setState({
+                success: response.success,
+                clients: response.list,
+            })
+        })
+        .catch(reason => {
+            this.setState({
+                success: reason.success,
+                errorMessage: reason.errorMessage,
+            })
+        })
+    }
+}
+
+```
+
+## Searching for places
+```placeSearch
+import { placeSearch } from 'paraplan-react'
+
+searchPlaces(){
+    const { key, restUrl, requestDevice, placesSearchString } = this.state
+    var request = {
+        key: key,
+        restUrl: restUrl,
+        device: requestDevice,
+        search: placesSearchString,
+    }
+    
+    placeSearch(request)
+        .then(response => {
+            this.setState({
+                success: response.success,
+                places: response.list,
+            })
+        })
+        .catch(reason => {
+            this.setState({
+                success: reason.success,
+                errorMessage: reason.errorMessage,
+            })
+        })
+
+    }
+
+```
+
+
+## Programs (Trip funding source)
+
+```programs
+import { programs } from 'paraplan-react'
+
+getPrograms() {
+    const { key, restUrl, requestDevice } = this.state
+
+    var request = {
+        key: key,
+        restUrl: restUrl,
+        device: requestDevice,
+    }
+
+    programs(request)
+        .then(response => {
+            this.setState({
+                success: response.success,
+                programs: response.list,
+            })
+        })
+        .catch(reason => {
+            this.setState({
+                success: reason.success,
+                errorMessage: reason.errorMessage,
+            })
+        })
+}
+
+```
+
+
 ## License
 
 MIT © [timhibbard](https://github.com/timhibbard) timhibbard@passiotech.com
