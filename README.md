@@ -340,7 +340,7 @@ searchClients(){
 
 ```
 
-## Searching for places
+## Places
 ```placeSearch
 import { placeSearch } from 'paraplan-react'
 
@@ -369,6 +369,34 @@ searchPlaces(){
 
     }
 
+```
+
+```placesOnDemand 
+//Places specificallly designated as on demand spots
+import { placesOnDemand } from 'paraplan-react'
+
+getOnDemandPlaces() {
+    const { key, restUrl, requestDevice } = this.state
+
+    var request = {
+        key: key,
+        restUrl: restUrl,
+        device: requestDevice,
+    }
+    placesOnDemand(request)
+        .then(response => {
+            this.setState({
+                success: response.success,
+                places: response.list,
+            })
+        })
+        .catch(reason => {
+            this.setState({
+                success: reason.success,
+                errorMessage: reason.errorMessage,
+            })
+        })
+}
 ```
 
 
@@ -401,6 +429,33 @@ getPrograms() {
         })
 }
 
+```
+
+## Trip Purposes (Appointment Types)
+```purposes
+import { purposes } from 'paraplan-react'
+getPurposes() {
+    const { key, restUrl, requestDevice } = this.state
+
+    var request = {
+        key: key,
+        restUrl: restUrl,
+        device: requestDevice,
+    }
+    purposes(request)
+        .then(response => {
+            this.setState({
+                success: response.success,
+                purposes: response.list,
+            })
+        })
+        .catch(reason => {
+            this.setState({
+                success: reason.success,
+                errorMessage: reason.errorMessage,
+            })
+        })
+}
 ```
 
 

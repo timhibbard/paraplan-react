@@ -618,7 +618,7 @@ export function programs(request){
     return promise
 }
 
-// - [ ] Need to document
+// - [x] Need to document
 export function placeSearch(request){
     var promise = new Promise((resolve, reject) => {
         var rv = {
@@ -663,7 +663,7 @@ export function placeSearch(request){
     return promise
 }
 
-// - [ ] Need to document
+// - [x] Need to document
 export function placesOnDemand(request){
     var promise = new Promise((resolve, reject) => {
         var rv = {
@@ -673,7 +673,7 @@ export function placesOnDemand(request){
         }
         var url =
             request.restUrl +  
-            'PlaceService/OnDemand/?Token=' +
+            'PlaceService/OnDemand?Token=' +
             request.key +
             '&Device=' +
             request.device
@@ -706,7 +706,7 @@ export function placesOnDemand(request){
     return promise
 }
 
-// - [ ] Need to document
+// - [x] Need to document
 export function purposes(request){
     var promise = new Promise((resolve, reject) => {
         var rv = {

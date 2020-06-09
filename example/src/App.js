@@ -16,6 +16,8 @@ import {
     clientSearch,
     programs,
     placeSearch,
+    placesOnDemand,
+    purposes
 } from 'paraplan-react'
 
 export default class App extends Component {
@@ -50,6 +52,7 @@ export default class App extends Component {
             programs: [],
             places: [],
             placesSearchString: '',
+            purposes: []
         }
 
         this.state = this.initialState
@@ -381,6 +384,52 @@ export default class App extends Component {
             })
     }
 
+    getOnDemandPlaces() {
+        const { key, restUrl, requestDevice } = this.state
+
+        var request = {
+            key: key,
+            restUrl: restUrl,
+            device: requestDevice,
+        }
+        placesOnDemand(request)
+            .then(response => {
+                this.setState({
+                    success: response.success,
+                    places: response.list,
+                })
+            })
+            .catch(reason => {
+                this.setState({
+                    success: reason.success,
+                    errorMessage: reason.errorMessage,
+                })
+            })
+    }
+
+    getPurposes() {
+        const { key, restUrl, requestDevice } = this.state
+
+        var request = {
+            key: key,
+            restUrl: restUrl,
+            device: requestDevice,
+        }
+        purposes(request)
+            .then(response => {
+                this.setState({
+                    success: response.success,
+                    purposes: response.list,
+                })
+            })
+            .catch(reason => {
+                this.setState({
+                    success: reason.success,
+                    errorMessage: reason.errorMessage,
+                })
+            })
+    }
+
     loginToAPI() {
         const {
             requestEmail,
@@ -439,6 +488,7 @@ export default class App extends Component {
             clients,
             programs,
             places,
+            purposes,
         } = this.state
 
         const labelStyle = {
@@ -528,6 +578,7 @@ export default class App extends Component {
                 <button style={buttonStyle} onClick={() => this.getPrograms()}>
                     Show Programs
                 </button>
+                
                 <input
                         style={inputStyle}
                         type="text"
@@ -538,14 +589,27 @@ export default class App extends Component {
                 <button style={buttonStyle} onClick={() => this.searchPlaces()}>
                     Search Places
                 </button>
+                <button style={buttonStyle} onClick={() => this.getOnDemandPlaces()}>
+                    Show On Demand Spots
+                </button>
+                <button style={buttonStyle} onClick={() => this.getPurposes()}>
+                    Trip Purposes
+                </button>
                 {config && JSON.stringify(config, null, 2) !== '{}' ? (
                     <div><pre>{ JSON.stringify(config, null, 2) }</pre></div>
                 ) : ''}
                 <ul>
+                    {purposes.map((purpose, i) => {
+                        return (
+                            <li key={purpose.id}>
+                                {purpose.name + ': ' + purpose.duration + ' (' + purpose.id + ')'}
+                            </li>
+                        )
+                    })}
                     {places.map((place, i) => {
                         return (
-                            <li key={place.databaseID}>
-                                {place.name + ': ' + place.address1}
+                            <li key={place.databaseId}>
+                                {place.name + ': ' + place.address1 + ' (' + place.databaseId + ')'}
                             </li>
                         )
                     })}
