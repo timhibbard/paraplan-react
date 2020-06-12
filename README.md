@@ -458,6 +458,32 @@ getPurposes() {
 }
 ```
 
+## Client Status Types
+```
+import { statusTypes } from 'paraplan-react'
+getStatusTypes() {
+    const { key, restUrl, requestDevice } = this.state
+
+    var request = {
+        key: key,
+        restUrl: restUrl,
+        device: requestDevice,
+    }
+    statusTypes(request)
+        .then(response => {
+            this.setState({
+                success: response.success,
+                statusTypes: response.list,
+            })
+        })
+        .catch(reason => {
+            this.setState({
+                success: reason.success,
+                errorMessage: reason.errorMessage,
+            })
+        })
+}
+```
 
 ## License
 

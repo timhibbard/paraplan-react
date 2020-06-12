@@ -748,3 +748,46 @@ export function purposes(request){
 
     return promise
 }
+
+// - [ ] Need to document
+export function statusTypes(request){
+    var promise = new Promise((resolve, reject) => {
+        var rv = {
+            success: false,
+            errorMessage: '',
+            list: [],
+        }
+        var url =
+            request.restUrl +  
+            'ClientService/StatusTypes/?Token=' +
+            request.key +
+            '&Device=' +
+            request.device
+        console.log(url)
+
+        fetch(url)
+            .then(res => res.json())
+            .then(json => {
+                if (json.success === false) {
+                    rv.success = false
+                    rv.errorMessage = json.errorMessage
+                    reject(rv)
+                    return
+                }
+
+                console.log(json)
+
+                rv.success = true
+                rv.list = json.list
+
+                resolve(rv)
+            })
+            .catch(() => {
+                rv.success = false
+                rv.errorMessage = 'Unknown error'
+                reject(rv)
+        })
+    })
+
+    return promise
+}

@@ -17,7 +17,8 @@ import {
     programs,
     placeSearch,
     placesOnDemand,
-    purposes
+    purposes,
+    statusTypes,
 } from 'paraplan-react'
 
 export default class App extends Component {
@@ -52,7 +53,8 @@ export default class App extends Component {
             programs: [],
             places: [],
             placesSearchString: '',
-            purposes: []
+            purposes: [],
+            statusTypes: [],
         }
 
         this.state = this.initialState
@@ -384,6 +386,29 @@ export default class App extends Component {
             })
     }
 
+    getStatusTypes() {
+        const { key, restUrl, requestDevice } = this.state
+
+        var request = {
+            key: key,
+            restUrl: restUrl,
+            device: requestDevice,
+        }
+        statusTypes(request)
+            .then(response => {
+                this.setState({
+                    success: response.success,
+                    statusTypes: response.list,
+                })
+            })
+            .catch(reason => {
+                this.setState({
+                    success: reason.success,
+                    errorMessage: reason.errorMessage,
+                })
+            })
+    }
+
     getOnDemandPlaces() {
         const { key, restUrl, requestDevice } = this.state
 
@@ -489,6 +514,7 @@ export default class App extends Component {
             programs,
             places,
             purposes,
+            statusTypes,
         } = this.state
 
         const labelStyle = {
@@ -578,6 +604,9 @@ export default class App extends Component {
                 <button style={buttonStyle} onClick={() => this.getPrograms()}>
                     Show Programs
                 </button>
+                <button style={buttonStyle} onClick={() => this.getStatusTypes()}>
+                    Show Status Types
+                </button>
                 
                 <input
                         style={inputStyle}
@@ -599,6 +628,13 @@ export default class App extends Component {
                     <div><pre>{ JSON.stringify(config, null, 2) }</pre></div>
                 ) : ''}
                 <ul>
+                {statusTypes.map((statusType, i) => {
+                        return (
+                            <li key={i}>
+                                {statusType.name + ': ' + statusType.isSchedulable}
+                            </li>
+                        )
+                    })}
                     {purposes.map((purpose, i) => {
                         return (
                             <li key={purpose.id}>
