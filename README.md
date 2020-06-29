@@ -182,6 +182,7 @@ approveTripRequest() {
                         : el
                 )
             })
+            //response also includes `.stops` which are the legs of the approved trip
         })
         .catch(reason => {
             this.setState({
@@ -474,6 +475,33 @@ getStatusTypes() {
             this.setState({
                 success: response.success,
                 statusTypes: response.list,
+            })
+        })
+        .catch(reason => {
+            this.setState({
+                success: reason.success,
+                errorMessage: reason.errorMessage,
+            })
+        })
+}
+```
+
+## Wheelchair Types
+```
+import { wheelchairTypes } from 'paraplan-react'
+getWheelchairTypes() {
+    const { key, restUrl, requestDevice } = this.state
+
+    var request = {
+        key: key,
+        restUrl: restUrl,
+        device: requestDevice,
+    }
+    wheelChairTypes(request)
+        .then(response => {
+            this.setState({
+                success: response.success,
+                wheelchairTypes: response.list,
             })
         })
         .catch(reason => {

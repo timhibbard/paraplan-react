@@ -19,6 +19,7 @@ import {
     placesOnDemand,
     purposes,
     statusTypes,
+    wheelchairTypes
 } from 'paraplan-react'
 
 export default class App extends Component {
@@ -55,6 +56,7 @@ export default class App extends Component {
             placesSearchString: '',
             purposes: [],
             statusTypes: [],
+            wheelchairTypes: [],
         }
 
         this.state = this.initialState
@@ -409,6 +411,29 @@ export default class App extends Component {
             })
     }
 
+    getWheelchairTypes() {
+        const { key, restUrl, requestDevice } = this.state
+    
+        var request = {
+            key: key,
+            restUrl: restUrl,
+            device: requestDevice,
+        }
+        wheelchairTypes(request)
+            .then(response => {
+                this.setState({
+                    success: response.success,
+                    wheelchairTypes: response.list,
+                })
+            })
+            .catch(reason => {
+                this.setState({
+                    success: reason.success,
+                    errorMessage: reason.errorMessage,
+                })
+            })
+    }
+
     getOnDemandPlaces() {
         const { key, restUrl, requestDevice } = this.state
 
@@ -515,6 +540,7 @@ export default class App extends Component {
             places,
             purposes,
             statusTypes,
+            wheelchairTypes,
         } = this.state
 
         const labelStyle = {
@@ -607,6 +633,9 @@ export default class App extends Component {
                 <button style={buttonStyle} onClick={() => this.getStatusTypes()}>
                     Show Status Types
                 </button>
+                <button style={buttonStyle} onClick={() => this.getWheelchairTypes()}>
+                    Show Wheelchair Types
+                </button>
                 
                 <input
                         style={inputStyle}
@@ -628,7 +657,14 @@ export default class App extends Component {
                     <div><pre>{ JSON.stringify(config, null, 2) }</pre></div>
                 ) : ''}
                 <ul>
-                {statusTypes.map((statusType, i) => {
+                {wheelchairTypes.map((wc, i) => {
+                        return (
+                            <li key={i}>
+                                {wc.wheelchairName}
+                            </li>
+                        )
+                    })}
+                    {statusTypes.map((statusType, i) => {
                         return (
                             <li key={i}>
                                 {statusType.name + ': ' + statusType.isSchedulable}
