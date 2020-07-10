@@ -480,6 +480,33 @@ export default class App extends Component {
             })
     }
 
+    addTrip() {
+        const { key, restUrl, requestDevice } = this.state
+
+        var request = {
+            key: key,
+            restUrl: restUrl,
+            device: requestDevice,
+            trip: {
+                
+
+            }
+        }
+        addTrip(request)
+            .then(response => {
+                this.setState({
+                    success: response.success,
+                    errorMessage: 'new tripid is ' + response.entity.tripId
+                })
+            })
+            .catch(reason => {
+                this.setState({
+                    success: reason.success,
+                    errorMessage: reason.errorMessage,
+                })
+            })
+    }
+
     loginToAPI() {
         const {
             requestEmail,
@@ -652,6 +679,9 @@ export default class App extends Component {
                 </button>
                 <button style={buttonStyle} onClick={() => this.getPurposes()}>
                     Trip Purposes
+                </button>
+                <button style={buttonStyle} onClick={() => this.addTrip()}>
+                    Add Trip
                 </button>
                 {config && JSON.stringify(config, null, 2) !== '{}' ? (
                     <div><pre>{ JSON.stringify(config, null, 2) }</pre></div>
