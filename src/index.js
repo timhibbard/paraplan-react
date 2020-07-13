@@ -175,57 +175,6 @@ export function scheduleTrip(request){
     return promise
 }
 
-// - [x] Standerize return object
-// - [x] Update documentation
-// - [ ] Remove proper return type after August 1
-export function unscheduleTrip(request){
-    var promise = new Promise((resolve, reject) => {
-        var rv = {
-            success: false,
-            errorMessage: '',
-            trip: {},
-            entity: {},
-        }
-        let url =
-            request.restUrl +
-            'TripService/UnscheduleTrip?Token=' +
-            request.key +
-            '&Device=' +
-            request.device
-
-        console.log(url)
-
-        fetch(url, {
-            method: 'POST',
-            body: JSON.stringify(request.trip),
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        })
-            .then(res => res.json())
-            .then(json => {
-                if (json.success === false) {
-                    rv.success = false
-                    rv.errorMessage = json.errorMessage
-                    reject(rv)
-                    return
-                }
-
-                rv.success = true
-                rv.trip = json.entity
-                resolve(rv)
-            })
-            .catch((error) => {
-                rv.success = false
-                console.log(error)
-                rv.errorMessage = 'Unknown error'
-                reject(rv)
-            })
-    })
-
-    return promise
-}
 
 // - [x] Standerize return object
 // - [x] Update documentation

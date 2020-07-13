@@ -228,6 +228,51 @@ rejectTripRequest() {
 }
 ```
 
+## Add a new trip (not request)
+```adimport { addTrip } from 'paraplan-react'
+
+addTripFromDispatch() {
+    var request = {
+        key: <from login>,
+        restUrl: <from login>,
+        device: 'connect-web',
+        trip: {
+                client: {
+                    id: 19282
+                },
+                pickUpPlace: {
+                    databaseId: 35604
+                },
+                dropOffPlace: {
+                    databaseId: 34409
+                },
+                scheduledPickUpTime : moment().add(5,'minutes').unix(),
+                scheduledDropOffTime : moment().add(30,'minutes').unix(),
+                appointmentTime : moment().add(5,'minutes').unix(),
+                program : {
+                    databaseID : 53
+                },
+            }
+    }
+
+    addTrip(request)
+            .then(response => {
+                this.setState({
+                    success: response.success,
+                    successMessage: 'new tripid is ' + response.entity.tripId
+                })
+            })
+            .catch(reason => {
+                this.setState({
+                    success: reason.success,
+                    errorMessage: reason.errorMessage,
+                })
+            })
+}
+
+
+```
+
 - While `request.tripRequest` will take the entire trip request. It only needs to have `.importTripID` populated. It will ignore all other fields and build the object on the server fresh from the database.
 - In the return object, `request` will have the most up to date version of the trip request.
 - Also, the return object of approve will contain `stops`, which is an array of `Stop`. Appending existing stop arrays with this data will save a round trip to the server.

@@ -19,7 +19,8 @@ import {
     placesOnDemand,
     purposes,
     statusTypes,
-    wheelchairTypes
+    wheelchairTypes,
+    addTrip,
 } from 'paraplan-react'
 
 export default class App extends Component {
@@ -480,7 +481,7 @@ export default class App extends Component {
             })
     }
 
-    addTrip() {
+    addTripToAPI() {
         const { key, restUrl, requestDevice } = this.state
 
         var request = {
@@ -488,8 +489,21 @@ export default class App extends Component {
             restUrl: restUrl,
             device: requestDevice,
             trip: {
-                
-
+                client: {
+                    id: 19282
+                },
+                pickUpPlace: {
+                    databaseId: 35604
+                },
+                dropOffPlace: {
+                    databaseId: 34409
+                },
+                scheduledPickUpTime : moment().add(5,'minutes').unix(),
+                scheduledDropOffTime : moment().add(30,'minutes').unix(),
+                appointmentTime : moment().add(5,'minutes').unix(),
+                program : {
+                    databaseID : 53
+                },
             }
         }
         addTrip(request)
@@ -680,7 +694,7 @@ export default class App extends Component {
                 <button style={buttonStyle} onClick={() => this.getPurposes()}>
                     Trip Purposes
                 </button>
-                <button style={buttonStyle} onClick={() => this.addTrip()}>
+                <button style={buttonStyle} onClick={() => this.addTripToAPI()}>
                     Add Trip
                 </button>
                 {config && JSON.stringify(config, null, 2) !== '{}' ? (
