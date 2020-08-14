@@ -388,6 +388,57 @@ export function routes(request){
     return promise
 }
 
+export function routesByRange(request){
+    var promise = new Promise((resolve, reject) => {
+        var rv = {
+            success: false,
+            errorMessage: '',
+            list: [],
+        }
+        let url =
+            request.restUrl +
+            'TripService/FleetmanagersInWrapper?Token=' +
+            request.key +
+            '&Device=' +
+            request.device +
+            '&startRange=' +
+            request.startRange +
+            '&endRange=' +
+            request.endRange
+
+        console.log(url)
+
+        fetch(url)
+            .then(res => res.json())
+            .then(json => {
+                console.log(json)
+                if (json.success === false) {
+                    rv.success = false
+                    rv.errorMessage = json.errorMessage
+                    reject(rv)
+                    return
+                }
+
+                rv.success = true
+
+                if (json.list.length === 0) {
+                    resolve(rv)
+                    return
+                }
+
+                rv.list = json.list
+                resolve(rv)
+            })
+            .catch(() => {
+                rv.success = false
+                rv.errorMessage = 'Unknown error'
+                reject(rv)
+            })
+    })
+
+    return promise
+}
+
 // - [x] Standerize return object
 // - [x] Update documentation
 // - [ ] Remove proper return type after August 1
@@ -881,6 +932,52 @@ export function wheelchairTypes(request){
                 rv.errorMessage = 'Unknown error'
                 reject(rv)
         })
+    })
+
+    return promise
+}
+
+export function changePassword(request){
+    var promise = new Promise((resolve, reject) => {
+        var rv = {
+            success: false,
+            errorMessage: '',
+        }
+        let url =
+            request.restUrl +
+            'UserService/ChangePassword?Token=' +
+            request.key +
+            '&Device=' +
+            request.device
+
+        console.log(url)
+
+        fetch(url, {
+            method: 'POST',
+            body: JSON.stringify(request.changePassword),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(res => res.json())
+            .then(json => {
+                if (json.success === false) {
+                    rv.success = false
+                    rv.errorMessage = json.errorMessage
+                    reject(rv)
+                    return
+                }
+
+                rv.success = true
+                resolve(rv)
+            })
+            .catch((error) => {
+                rv.success = false
+                console.log(error)
+                rv.errorMessage = 'Unknown error'
+                reject(rv)
+            })
     })
 
     return promise

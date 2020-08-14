@@ -6,6 +6,7 @@ import dateFormat from 'dateformat'
 import {
     login,
     routes,
+    routesByRange,
     trips,
     tripRequests,
     approveRequest,
@@ -21,6 +22,7 @@ import {
     statusTypes,
     wheelchairTypes,
     addTrip,
+    changePassword,
 } from 'paraplan-react'
 
 export default class App extends Component {
