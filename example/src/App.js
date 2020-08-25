@@ -23,6 +23,9 @@ import {
     wheelchairTypes,
     addTrip,
     changePassword,
+    allVehicles,
+    allDrivers,
+    allRoutes,
 } from 'paraplan-react'
 
 export default class App extends Component {
@@ -60,6 +63,9 @@ export default class App extends Component {
             purposes: [],
             statusTypes: [],
             wheelchairTypes: [],
+            allVehicles: [],
+            allDrivers: [],
+            allRoutes: [],
         }
 
         this.state = this.initialState
@@ -483,6 +489,75 @@ export default class App extends Component {
             })
     }
 
+    getVehicles() {
+        const { key, restUrl, requestDevice } = this.state
+
+        var request = {
+            key: key,
+            restUrl: restUrl,
+            device: requestDevice,
+        }
+        allVehicles(request)
+            .then(response => {
+                this.setState({
+                    success: response.success,
+                    allVehicles: response.list,
+                })
+            })
+            .catch(reason => {
+                this.setState({
+                    success: reason.success,
+                    errorMessage: reason.errorMessage,
+                })
+            })
+    }
+
+    getDrivers() {
+        const { key, restUrl, requestDevice } = this.state
+
+        var request = {
+            key: key,
+            restUrl: restUrl,
+            device: requestDevice,
+        }
+        allDrivers(request)
+            .then(response => {
+                this.setState({
+                    success: response.success,
+                    allDrivers: response.list,
+                })
+            })
+            .catch(reason => {
+                this.setState({
+                    success: reason.success,
+                    errorMessage: reason.errorMessage,
+                })
+            })
+    }
+
+    getRoutes() {
+        const { key, restUrl, requestDevice } = this.state
+
+        var request = {
+            key: key,
+            restUrl: restUrl,
+            device: requestDevice,
+        }
+        allRoutes(request)
+            .then(response => {
+                this.setState({
+                    success: response.success,
+                    allRoutes: response.list,
+                })
+            })
+            .catch(reason => {
+                this.setState({
+                    success: reason.success,
+                    errorMessage: reason.errorMessage,
+                })
+            })
+    }
+
     addTripToAPI() {
         const { key, restUrl, requestDevice } = this.state
 
@@ -584,6 +659,9 @@ export default class App extends Component {
             purposes,
             statusTypes,
             wheelchairTypes,
+            allVehicles,
+            allDrivers,
+            allRoutes,
         } = this.state
 
         const labelStyle = {
@@ -696,6 +774,15 @@ export default class App extends Component {
                 <button style={buttonStyle} onClick={() => this.getPurposes()}>
                     Trip Purposes
                 </button>
+                <button style={buttonStyle} onClick={() => this.getVehicles()}>
+                    Vehicles
+                </button>
+                <button style={buttonStyle} onClick={() => this.getDrivers()}>
+                    Drivers
+                </button>
+                <button style={buttonStyle} onClick={() => this.getRoutes()}>
+                    Routes
+                </button>
                 <button style={buttonStyle} onClick={() => this.addTripToAPI()}>
                     Add Trip
                 </button>
@@ -703,6 +790,27 @@ export default class App extends Component {
                     <div><pre>{ JSON.stringify(config, null, 2) }</pre></div>
                 ) : ''}
                 <ul>
+                {allVehicles.map((v, i) => {
+                        return (
+                            <li key={v.databaseID}>
+                                {v.year + ' ' + v.make}
+                            </li>
+                        )
+                    })}
+                    {allDrivers.map((d, i) => {
+                        return (
+                            <li key={d.databaseID}>
+                                {d.firstName + ' ' + d.lastName}
+                            </li>
+                        )
+                    })}
+                    {allRoutes.map((r, i) => {
+                        return (
+                            <li key={r.databaseID}>
+                                {r.name}
+                            </li>
+                        )
+                    })}
                 {wheelchairTypes.map((wc, i) => {
                         return (
                             <li key={i}>

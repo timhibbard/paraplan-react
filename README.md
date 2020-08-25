@@ -70,6 +70,61 @@ getConfig(){
 
 ```
 
+## Drivers
+```drivers
+import { allDrivers } from 'paraplan-react'
+
+getDrivers() {
+    var request = {
+        restUrl: '<from login>',
+        key: '<from login>',
+        device: 'connect-web',
+    }
+    allDrivers(request)
+        .then(response => {
+            this.setState({
+                success: response.success,
+                allDrivers: response.list,
+            })
+        })
+        .catch(reason => {
+            this.setState({
+                success: reason.success,
+                errorMessage: reason.errorMessage,
+            })
+        })
+}
+
+```
+
+## Vehicles
+```vehicles
+import { allVehicles } from 'paraplan-react'
+
+getVehicles() {
+
+    var request = {
+        restUrl: '<from login>',
+        key: '<from login>',
+        device: 'connect-web',
+    }
+    allVehicles(request)
+        .then(response => {
+            this.setState({
+                success: response.success,
+                allVehicles: response.list,
+            })
+        })
+        .catch(reason => {
+            this.setState({
+                success: reason.success,
+                errorMessage: reason.errorMessage,
+            })
+        })
+}
+
+```
+
 ## Routes (FleetManagers)
 
 ```routes
@@ -97,6 +152,33 @@ viewTodaysRoutes() {
   })
 }
 ```
+
+```allRoutes
+import { allRoutes } from 'paraplan-react'
+getRoutes() {
+    const { key, restUrl, requestDevice } = this.state
+
+    var request = {
+        restUrl: '<from login>',
+        key: '<from login>',
+        device: 'connect-web',
+    }
+    allRoutes(request)
+        .then(response => {
+            this.setState({
+                success: response.success,
+                allRoutes: response.list,
+            })
+        })
+        .catch(reason => {
+            this.setState({
+                success: reason.success,
+                errorMessage: reason.errorMessage,
+            })
+        })
+}
+```
+
 
 ## Trips
 

@@ -336,13 +336,12 @@ export function addTrip(request){
 
 // - [x] Standerize return object
 // - [x] Update documentation
-// - [ ] Remove proper return type after August 1
+// - [x] Remove proper return type after August 1
 export function routes(request){
     var promise = new Promise((resolve, reject) => {
         var rv = {
             success: false,
             errorMessage: '',
-            routes: [],
             list: [],
         }
         let url =
@@ -374,7 +373,6 @@ export function routes(request){
                     return
                 }
 
-                rv.routes = json.list
                 rv.list = json.list
                 resolve(rv)
             })
@@ -426,6 +424,145 @@ export function routesByRange(request){
                     return
                 }
 
+                rv.list = json.list
+                resolve(rv)
+            })
+            .catch(() => {
+                rv.success = false
+                rv.errorMessage = 'Unknown error'
+                reject(rv)
+            })
+    })
+
+    return promise
+}
+
+
+export function allVehicles(request){
+    var promise = new Promise((resolve, reject) => {
+        var rv = {
+            success: false,
+            errorMessage: '',
+            list: [],
+        }
+        let url =
+            request.restUrl +
+            'RouteService/Vehicles?Token=' +
+            request.key +
+            '&Device=' +
+            request.device 
+
+        console.log(url)
+
+        fetch(url)
+            .then(res => res.json())
+            .then(json => {
+                console.log(json)
+                if (json.success === false) {
+                    rv.success = false
+                    rv.errorMessage = json.errorMessage
+                    reject(rv)
+                    return
+                }
+
+                rv.success = true
+
+                if (json.list.length === 0) {
+                    resolve(rv)
+                    return
+                }
+                rv.list = json.list
+                resolve(rv)
+            })
+            .catch(() => {
+                rv.success = false
+                rv.errorMessage = 'Unknown error'
+                reject(rv)
+            })
+    })
+
+    return promise
+}
+
+export function allRoutes(request){
+    var promise = new Promise((resolve, reject) => {
+        var rv = {
+            success: false,
+            errorMessage: '',
+            list: [],
+        }
+        let url =
+            request.restUrl +
+            'RouteService/AllRoutes?Token=' +
+            request.key +
+            '&Device=' +
+            request.device 
+
+        console.log(url)
+
+        fetch(url)
+            .then(res => res.json())
+            .then(json => {
+                console.log(json)
+                if (json.success === false) {
+                    rv.success = false
+                    rv.errorMessage = json.errorMessage
+                    reject(rv)
+                    return
+                }
+
+                rv.success = true
+
+                if (json.list.length === 0) {
+                    resolve(rv)
+                    return
+                }
+                rv.list = json.list
+                resolve(rv)
+            })
+            .catch(() => {
+                rv.success = false
+                rv.errorMessage = 'Unknown error'
+                reject(rv)
+            })
+    })
+
+    return promise
+}
+
+export function allDrivers(request){
+    var promise = new Promise((resolve, reject) => {
+        var rv = {
+            success: false,
+            errorMessage: '',
+            list: [],
+        }
+        let url =
+            request.restUrl +
+            'RouteService/Drivers?Token=' +
+            request.key +
+            '&Device=' +
+            request.device 
+
+        console.log(url)
+
+        fetch(url)
+            .then(res => res.json())
+            .then(json => {
+                console.log(json)
+                if (json.success === false) {
+                    rv.success = false
+                    rv.errorMessage = json.errorMessage
+                    reject(rv)
+                    return
+                }
+
+                rv.success = true
+
+                if (json.list.length === 0) {
+                    resolve(rv)
+                    return
+                }
                 rv.list = json.list
                 resolve(rv)
             })
