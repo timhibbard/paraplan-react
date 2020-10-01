@@ -97,6 +97,47 @@ getDrivers() {
 
 ```
 
+## Save Fleetmanager
+```saveFleetmanager
+import { saveFleetmanager } from 'paraplan-react'
+saveFleetmanager(){
+
+    var fm = {
+        driverID: 157,
+        routeId: 102,
+        endTime: "/Date(-2209093200000+0000)/",
+        startTime: "/Date(-2209141800000+0000)/",
+        vehicleID: 311,
+        fleetmanagerID: 10463
+    }
+
+    var request = {
+        restUrl: '<from login>',
+        key: '<from login>',
+        device: 'connect-web',
+        fleetmanager: fm,
+    }
+
+
+    saveFleetmanager(request)
+        .then(response => {
+            console.log(response);
+            this.setState({fleetManagerId: response.fleetmanagerId})
+
+        })
+        .catch(reason => {
+            console.log(reason.errorMessage)
+            this.setState({
+                success: reason.success,
+                errorMessage: reason.errorMessage,
+            })
+        })
+
+}
+
+
+```
+
 ## Vehicles
 ```vehicles
 import { allVehicles } from 'paraplan-react'

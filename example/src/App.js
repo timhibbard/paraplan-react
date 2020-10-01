@@ -26,6 +26,8 @@ import {
     allVehicles,
     allDrivers,
     allRoutes,
+    saveFleetmanager,
+    savePlace,
 } from 'paraplan-react'
 
 export default class App extends Component {
@@ -66,6 +68,8 @@ export default class App extends Component {
             allVehicles: [],
             allDrivers: [],
             allRoutes: [],
+            fleetManagerId: '',
+            newPlaceId: '',
         }
 
         this.state = this.initialState
@@ -142,6 +146,80 @@ export default class App extends Component {
                     errorMessage: reason.errorMessage,
                 })
             })
+    }
+
+    createNewPlace(){
+        const { key, restUrl, requestDevice } = this.state
+
+        var place = {
+            name: 'delete me',
+            address1: '340 Rocky Slope Rd',
+            address2: 'Suite 200',
+            city: 'Greenville',
+            state: 'SC',
+            zip: '29607'
+        }
+
+        var requestObject = {
+            key: key,
+            restUrl: restUrl,
+            device: requestDevice,
+            place: place,
+        }
+
+        console.log(requestObject)
+
+        savePlace(requestObject)
+            .then(response => {
+                console.log(response.databaseId);
+                this.setState({newPlaceId: response.databaseId})
+
+            })
+            .catch(reason => {
+                console.log(reason.errorMessage)
+                this.setState({
+                    success: reason.success,
+                    errorMessage: reason.errorMessage,
+                })
+            })
+
+    }
+
+    saveFleetmanager(){
+        const { key, restUrl, requestDevice, routes, allRoutes } = this.state
+
+        var fm = {
+            driverID: 157,
+            routeId: 102,
+            endTime: "/Date(-2209093200000+0000)/",
+            startTime: "/Date(-2209141800000+0000)/",
+            vehicleID: 311,
+            fleetmanagerID: 10463
+        }
+
+        var requestObject = {
+            key: key,
+            restUrl: restUrl,
+            device: requestDevice,
+            fleetmanager: fm,
+        }
+
+        console.log(requestObject)
+
+        saveFleetmanager(requestObject)
+            .then(response => {
+                console.log(response.fleetmanagerId);
+                this.setState({fleetManagerId: response.fleetmanagerId})
+
+            })
+            .catch(reason => {
+                console.log(reason.errorMessage)
+                this.setState({
+                    success: reason.success,
+                    errorMessage: reason.errorMessage,
+                })
+            })
+
     }
 
     approveTripRequest(request) {
@@ -662,6 +740,8 @@ export default class App extends Component {
             allVehicles,
             allDrivers,
             allRoutes,
+            fleetManagerId,
+            newPlaceId,
         } = this.state
 
         const labelStyle = {
@@ -719,6 +799,10 @@ export default class App extends Component {
                 <br />
                 ClientID = {clientId}
                 <br />
+                FleetManagerID = {fleetManagerId}
+                <br />
+                New Place ID = {newPlaceId}
+                <br />
                 Can Request Trips = {String(clientCanRequestTrips)}
                 <br />
                 <br />
@@ -768,6 +852,9 @@ export default class App extends Component {
                 <button style={buttonStyle} onClick={() => this.searchPlaces()}>
                     Search Places
                 </button>
+                <button style={buttonStyle} onClick={() => this.createNewPlace()}>
+                    New Place
+                </button>
                 <button style={buttonStyle} onClick={() => this.getOnDemandPlaces()}>
                     Show On Demand Spots
                 </button>
@@ -785,6 +872,9 @@ export default class App extends Component {
                 </button>
                 <button style={buttonStyle} onClick={() => this.addTripToAPI()}>
                     Add Trip
+                </button>
+                <button style={buttonStyle} onClick={() => this.saveFleetmanager()}>
+                    Save Fleetmanager
                 </button>
                 {config && JSON.stringify(config, null, 2) !== '{}' ? (
                     <div><pre>{ JSON.stringify(config, null, 2) }</pre></div>

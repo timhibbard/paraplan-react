@@ -1119,3 +1119,96 @@ export function changePassword(request){
 
     return promise
 }
+
+
+export function saveFleetmanager(request){
+    var promise = new Promise((resolve, reject) => {
+        var rv = {
+            success: false,
+            errorMessage: '',
+        }
+        let url =
+            request.restUrl +
+            'RouteService/SaveFleetmanager?Token=' +
+            request.key +
+            '&Device=' +
+            request.device
+
+        console.log(url)
+
+        fetch(url, {
+            method: 'POST',
+            body: JSON.stringify(request.fleetmanager),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(res => res.json())
+            .then(json => {
+                if (json.success === false) {
+                    rv.success = false
+                    rv.errorMessage = json.errorMessage
+                    reject(rv)
+                    return
+                }
+
+                rv.fleetmanagerId = json.fleetmanagerId
+                rv.success = true
+                resolve(rv)
+            })
+            .catch((error) => {
+                rv.success = false
+                console.log(error)
+                rv.errorMessage = 'Unknown error'
+                reject(rv)
+            })
+    })
+
+    return promise
+}
+
+export function savePlace(request){
+    var promise = new Promise((resolve, reject) => {
+        var rv = {
+            success: false,
+            errorMessage: '',
+        }
+        let url =
+            request.restUrl +
+            'PlaceService/Save?Token=' +
+            request.key +
+            '&Device=' +
+            request.device
+
+        console.log(url)
+
+        fetch(url, {
+            method: 'POST',
+            body: JSON.stringify(request.place),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(res => res.json())
+            .then(json => {
+                if (json.success === false) {
+                    rv.success = false
+                    rv.errorMessage = json.errorMessage
+                    reject(rv)
+                    return
+                }
+
+                resolve(json)
+            })
+            .catch((error) => {
+                rv.success = false
+                console.log(error)
+                rv.errorMessage = 'Unknown error'
+                reject(rv)
+            })
+    })
+
+    return promise
+}
