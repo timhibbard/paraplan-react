@@ -12,7 +12,7 @@ import Typography from '@material-ui/core/Typography'
 import IconButton from '@material-ui/core/IconButton'
 import ClearIcon from '@material-ui/icons/Clear'
 import { withStyles } from '@material-ui/core/styles'
-// import { withGoogleMap, GoogleMap } from 'react-google-maps'
+import { withGoogleMap, GoogleMap, Marker } from 'react-google-maps'
 import Draggable from 'react-draggable'
 
 //This is written based on guidelines from:
@@ -38,34 +38,24 @@ export class ExampleComponent extends Component {
     }
 }
 
-// const Map = withGoogleMap(props => {
-//     return <GoogleMap
-//         defaultZoom={(hasPUCoords || hasDOCoords) ? 14 : 3}
-//         center={
-//             (hasPUCoords && !hasDOCoords) ? {
-//                 lat: PULat,
-//                 lng: PULng
-//             } : (hasDOCoords && !hasPUCoords) ? {
-//                 lat: DOLat,
-//                 lng: DOLng
-//             } : null
-//         }
-//         defaultOptions={{controlSize: 25}}
-//     >
+const Map = withGoogleMap(props => <GoogleMap
+                    defaultZoom={10}
+                    center={{lat: 0, lng: 0}}
+                    defaultOptions={{controlSize: 25}}
+                >
+                    <Marker position={{ lat: 0, lng: 0 }}/>
+                </GoogleMap>)
 
-//     </GoogleMap>
-// })
-// function PaperComponent(props) {
-//     return (
-//       <Draggable handle="#draggable-dialog-title" cancel={'[class*="MuiDialogContent-root"]'}>
-//             <Paper {...props} />
-//       </Draggable>
-//     );
-// }
+function PaperComponent(props) {
+    return (
+      <Draggable handle="#draggable-dialog-title" cancel={'[class*="MuiDialogContent-root"]'}>
+            <Paper {...props} />
+      </Draggable>
+    );
+}
 
 export class FundingSourceDialog extends Component {
     render() { 
-        console.log('made it to paraplan-react')
         const styles = {
             title: {
                 padding: "20px 20px 0px 30px",
@@ -115,7 +105,11 @@ export class FundingSourceDialog extends Component {
                 <Typography style={styles.text}>
                     Drop off level of service: {dOLoS}
                 </Typography>
-                <Typography>***Map goes here***</Typography>
+                {/* <Typography>***Map goes here***</Typography> */}
+                <Map 
+                    containerElement={<div style={{ height: '300px', width: '300px', marginTop: 10 }} />}
+                    mapElement={<div style={{ height: '100%' }} />} 
+                />
             </DialogContent>
         </Dialog>
     }
