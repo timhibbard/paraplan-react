@@ -12,7 +12,8 @@ import Typography from '@material-ui/core/Typography'
 import IconButton from '@material-ui/core/IconButton'
 import ClearIcon from '@material-ui/icons/Clear'
 import { withStyles } from '@material-ui/core/styles'
-import { withGoogleMap, GoogleMap, Marker } from 'react-google-maps'
+import { withScriptjs, withGoogleMap, GoogleMap, Marker, Polygon } from 'react-google-maps'
+import { compose, withProps } from "recompose"
 import Draggable from 'react-draggable'
 
 //This is written based on guidelines from:
@@ -38,13 +39,28 @@ export class ExampleComponent extends Component {
     }
 }
 
-const Map = withGoogleMap(props => <GoogleMap
-                    defaultZoom={10}
-                    center={{lat: 0, lng: 0}}
-                    defaultOptions={{controlSize: 25}}
-                >
-                    <Marker position={{ lat: 0, lng: 0 }}/>
-                </GoogleMap>)
+const Map = compose(withProps({
+      googleMapURL: "https://maps.googleapis.com/maps/api/js?key=AIzaSyBkgzbpJ2eOKjkJEMi1gUhEl3Pfub6t8Q0&libraries=places",
+      loadingElement: <div style={{ height: `100%` }} />,
+      mapElement: <div style={{ height: `100%` }} />
+    }), withScriptjs, withGoogleMap)((props) =>
+        <GoogleMap
+            defaultZoom={10}
+            center={{lat: 0, lng: 0}}
+            defaultOptions={{controlSize: 25}}
+        >
+            <Marker position={{ lat: 0, lng: 0 }}/>
+            <Polygon path={props.geozone}/>
+        </GoogleMap>
+    )
+
+// const Map = withScriptjs(withGoogleMap(props => <GoogleMap
+//                     defaultZoom={10}
+//                     center={{lat: 0, lng: 0}}
+//                     defaultOptions={{controlSize: 25}}
+//                 >
+//                     <Marker position={{ lat: 0, lng: 0 }}/>
+//                 </GoogleMap>))
 
 function PaperComponent(props) {
     return (
@@ -74,7 +90,7 @@ export class FundingSourceDialog extends Component {
                 // position: 'relative'
             }
         }
-        const { name, copay, pULoS, dOLoS, closeForm } = this.props
+        const { name, copay, pULoS, dOLoS, closeForm, mapContainerStyle, geozone } = this.props
         return <Dialog
             style={{bottom: 'auto', top: '32px'}}
             hideBackdrop={true}
@@ -107,8 +123,9 @@ export class FundingSourceDialog extends Component {
                 </Typography>
                 {/* <Typography>***Map goes here***</Typography> */}
                 <Map 
-                    containerElement={<div style={{ height: '300px', width: '300px', marginTop: 10 }} />}
-                    mapElement={<div style={{ height: '100%' }} />} 
+                    containerElement={<div style={mapContainerStyle} />}
+                    geozone={geozone}
+                    // mapElement={<div style={{ height: '100%' }} />} 
                 />
             </DialogContent>
         </Dialog>
