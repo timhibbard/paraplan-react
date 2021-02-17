@@ -3,18 +3,6 @@ import PropTypes from 'prop-types'
 import { isNullOrUndefined } from 'util'
 import shajs from '../node_modules/sha.js'
 
-import Grid from '@material-ui/core/Grid'
-import Dialog from '@material-ui/core/Dialog'
-import DialogContent from '@material-ui/core/DialogContent'
-import DialogTitle from '@material-ui/core/DialogTitle'
-import Paper from '@material-ui/core/Paper'
-import Typography from '@material-ui/core/Typography'
-import IconButton from '@material-ui/core/IconButton'
-import ClearIcon from '@material-ui/icons/Clear'
-import { withStyles } from '@material-ui/core/styles'
-// import { withGoogleMap, GoogleMap } from 'react-google-maps'
-import Draggable from 'react-draggable'
-
 //This is written based on guidelines from:
 //https://github.com/transitive-bullshit/create-react-library#readme
 
@@ -37,90 +25,6 @@ export class ExampleComponent extends Component {
         return 'hello'
     }
 }
-
-// const Map = withGoogleMap(props => {
-//     return <GoogleMap
-//         defaultZoom={(hasPUCoords || hasDOCoords) ? 14 : 3}
-//         center={
-//             (hasPUCoords && !hasDOCoords) ? {
-//                 lat: PULat,
-//                 lng: PULng
-//             } : (hasDOCoords && !hasPUCoords) ? {
-//                 lat: DOLat,
-//                 lng: DOLng
-//             } : null
-//         }
-//         defaultOptions={{controlSize: 25}}
-//     >
-
-//     </GoogleMap>
-// })
-// function PaperComponent(props) {
-//     return (
-//       <Draggable handle="#draggable-dialog-title" cancel={'[class*="MuiDialogContent-root"]'}>
-//             <Paper {...props} />
-//       </Draggable>
-//     );
-// }
-
-export class FundingSourceDialog extends Component {
-    render() { 
-        console.log('made it to paraplan-react')
-        const styles = {
-            title: {
-                padding: "20px 20px 0px 30px",
-                cursor: 'move'
-            },
-            content: {
-                padding: "20px 30px"
-            },
-            text: {
-                color: "black",
-                marginBottom: 5
-            },
-            exitButton: {
-                margin: 5,
-                padding: 5,
-                // position: 'relative'
-            }
-        }
-        const { name, copay, pULoS, dOLoS, closeForm } = this.props
-        return <Dialog
-            style={{bottom: 'auto', top: '32px'}}
-            hideBackdrop={true}
-            open={true}
-            onClose={this.props.closeForm}
-            PaperComponent={(props) => 
-                <Draggable handle="#draggable-dialog-title" cancel={'[class*="MuiDialogContent-root"]'}>
-                    <Paper {...props} />
-                </Draggable>
-            }
-            aria-labelledby="draggable-dialog-title"
-        >
-            <Grid container justify='flex-end' style={{position: 'absolute', height: 0}}>
-                <IconButton onClick={closeForm} style={styles.exitButton}>
-                    <ClearIcon />
-                </IconButton>
-            </Grid>
-            <DialogTitle style={styles.title} id="draggable-dialog-title">
-                {name}
-            </DialogTitle>
-            <DialogContent style={styles.content}>
-                <Typography style={styles.text}>
-                    Cost (Copay): ${copay}
-                </Typography>
-                <Typography style={styles.text}>
-                    Pick up level of service: {pULoS}
-                </Typography>
-                <Typography style={styles.text}>
-                    Drop off level of service: {dOLoS}
-                </Typography>
-                <Typography>***Map goes here***</Typography>
-            </DialogContent>
-        </Dialog>
-    }
-}
-
 // - [x] Standerize return object
 // - [x] Update documentation
 // - [ ] Remove proper return type after August 1
