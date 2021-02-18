@@ -54,22 +54,6 @@ const Map = compose(withProps({
         </GoogleMap>
     )
 
-// const Map = withScriptjs(withGoogleMap(props => <GoogleMap
-//                     defaultZoom={10}
-//                     center={{lat: 0, lng: 0}}
-//                     defaultOptions={{controlSize: 25}}
-//                 >
-//                     <Marker position={{ lat: 0, lng: 0 }}/>
-//                 </GoogleMap>))
-
-function PaperComponent(props) {
-    return (
-      <Draggable handle="#draggable-dialog-title" cancel={'[class*="MuiDialogContent-root"]'}>
-            <Paper {...props} />
-      </Draggable>
-    );
-}
-
 export class FundingSourceDialog extends Component {
     render() { 
         const styles = {
@@ -87,7 +71,6 @@ export class FundingSourceDialog extends Component {
             exitButton: {
                 margin: 5,
                 padding: 5,
-                // position: 'relative'
             }
         }
         const { name, copay, pULoS, dOLoS, closeForm, mapContainerStyle, geozone } = this.props
@@ -121,11 +104,9 @@ export class FundingSourceDialog extends Component {
                 <Typography style={styles.text}>
                     Drop off level of service: {dOLoS}
                 </Typography>
-                {/* <Typography>***Map goes here***</Typography> */}
                 <Map 
                     containerElement={<div style={mapContainerStyle} />}
                     geozone={geozone}
-                    // mapElement={<div style={{ height: '100%' }} />} 
                 />
             </DialogContent>
         </Dialog>
