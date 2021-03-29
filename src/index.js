@@ -9,12 +9,19 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import Paper from '@material-ui/core/Paper'
 import Typography from '@material-ui/core/Typography'
+import Table from '@material-ui/core/Table'
+import TableBody from '@material-ui/core/TableBody'
+import TableCell from '@material-ui/core/TableCell'
+import TableContainer from '@material-ui/core/TableContainer'
+import TableHead from '@material-ui/core/TableHead'
+import TableRow from '@material-ui/core/TableRow'
 import IconButton from '@material-ui/core/IconButton'
 import ClearIcon from '@material-ui/icons/Clear'
 import { withStyles } from '@material-ui/core/styles'
 import { withScriptjs, withGoogleMap, GoogleMap, Marker, Polygon } from 'react-google-maps'
 import { compose, withProps } from "recompose"
 import Draggable from 'react-draggable'
+import moment from 'moment'
 
 //This is written based on guidelines from:
 //https://github.com/transitive-bullshit/create-react-library#readme
@@ -39,6 +46,8 @@ export class ExampleComponent extends Component {
     }
 }
 
+const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+
 const Map = compose(withProps({
       googleMapURL: "https://maps.googleapis.com/maps/api/js?key=AIzaSyBkgzbpJ2eOKjkJEMi1gUhEl3Pfub6t8Q0&libraries=places",
       loadingElement: <div style={{ height: `100%` }} />,
@@ -55,6 +64,31 @@ const Map = compose(withProps({
     )
 
 export class FundingSourceDialog extends Component {
+    formatTime = (input) => {
+        let hours = parseInt(input.substr(11, 2)),
+            minutes = parseInt(input.substr(14, 2)),
+            output, hoursFormatted, minutesFormatted, endingFormatted
+
+        hoursFormatted = hours.toString()
+        if (hours < 12) {
+            endingFormatted = 'AM'
+            if (hours == 0)
+                hoursFormatted = '12'
+        } else {
+            endingFormatted = 'PM'
+            if (hours !== 12)
+                hoursFormatted = (hours - 12).toString()
+        }
+        if (minutes != 0) {
+            if (minutes < 10)
+                minutesFormatted = ':0' + minutes
+            else
+                minutesFormatted = ':' + minutes
+        }
+        else
+            minutesFormatted = ''
+        return `${hoursFormatted}${minutesFormatted} ${endingFormatted}`
+    }
     render() { 
         const styles = {
             title: {
@@ -71,14 +105,46 @@ export class FundingSourceDialog extends Component {
             exitButton: {
                 margin: 5,
                 padding: 5,
+            },
+            table: {
+                borderBottom: 'none'
+            },
+            tableBold: {
+                borderBottom: 'none',
+                fontWeight: 'bold'
+            },
+            mapContainer: {
+                height: '300px',
+                width: '300px',
+                marginTop: 10
             }
         }
-        const { name, copay, pULoS, dOLoS, closeForm, mapContainerStyle, geozone } = this.props
+        const { fundingSource, boldDay, closeForm } = this.props
+        const { programName, pickUpLOS, dropOffLOS, geozones } = fundingSource
+        const copay = fundingSource.fixedFee.clientCoPay !== null ? (fundingSource.fixedFee.clientCoPay * 1).toFixed(2) : ((fundingSource.perMileFee.clientCoPay * 1).toFixed(2) + '/mile')
+        const boldRow = boldDay ? boldDay : moment().format('dddd')
+        let rows = [{day: 'Sunday'}, {day: 'Monday'}, {day: 'Tuesday'}, {day: 'Wednesday'}, {day: 'Thursday'}, {day: 'Friday'}, {day: 'Saturday'}]
+        for (const [day, info] of Object.entries(JSON.parse(fundingSource.programCalendarRules))) {
+            let times = ''
+            if (!info.Active)
+                times = 'No Service'
+            else {
+                const startTime = this.formatTime(info.StartJSON),
+                        endTime = this.formatTime(info.EndJSON)
+                if (startTime === '12 AM' && endTime === '11:59 PM')
+                    times = '24 Hour'
+                else
+                    times = `${startTime} to ${endTime}`
+            }
+            rows[rows.findIndex((row) => row.day === day)].times = times
+        }
+        if (rows.every((row) => row.times === 'No Service'))
+            rows.forEach((v, i) => rows[i].times = '24 Hour')
         return <Dialog
             style={{bottom: 'auto', top: '32px'}}
             hideBackdrop={true}
             open={true}
-            onClose={this.props.closeForm}
+            onClose={closeForm}
             PaperComponent={(props) => 
                 <Draggable handle="#draggable-dialog-title" cancel={'[class*="MuiDialogContent-root"]'}>
                     <Paper {...props} />
@@ -92,21 +158,41 @@ export class FundingSourceDialog extends Component {
                 </IconButton>
             </Grid>
             <DialogTitle style={styles.title} id="draggable-dialog-title">
-                {name}
+                {programName}
             </DialogTitle>
             <DialogContent style={styles.content}>
                 <Typography style={styles.text}>
                     Cost (Copay): ${copay}
                 </Typography>
                 <Typography style={styles.text}>
-                    Pick up level of service: {pULoS}
+                    Pick up level of service: {pickUpLOS}
                 </Typography>
                 <Typography style={styles.text}>
-                    Drop off level of service: {dOLoS}
+                    Drop off level of service: {dropOffLOS}
                 </Typography>
+
+                <TableContainer>
+                    <Table size="small">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Day of week</TableCell>
+                                <TableCell>Service Hours</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {rows.map((row) => 
+                                <TableRow key={row.day}>
+                                    <TableCell style={boldRow === row.day ? styles.tableBold : styles.table} component="th" scope="row">{row.day}:</TableCell>
+                                    <TableCell style={boldRow === row.day ? styles.tableBold : styles.table}>{row.times}</TableCell>
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+
                 <Map 
-                    containerElement={<div style={mapContainerStyle} />}
-                    geozone={geozone}
+                    containerElement={<div style={styles.mapContainer} />}
+                    geozone={[{lat: .1, lng: .1}, {lat: -.1, lng: .1}, {lat: -.1, lng: -.1}, {lat: .1, lng: -.1}]}
                 />
             </DialogContent>
         </Dialog>
