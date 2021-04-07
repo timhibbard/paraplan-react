@@ -5,12 +5,15 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "prop-types": "^15.6.2",
-    "react": "^16.4.1",
-    "react-dom": "^16.4.1",
-    "react-scripts": "^1.1.4",
+    "dateformat": "^4.5.1",
+    "dns": "file:./src/mock/dns",
+    "moment": "^2.29.1",
+    "moment-timezone": "^0.5.33",
     "paraplan-react": "file:..",
-    "dns": "file:./src/mock/dns"
+    "prop-types": "^15.6.2",
+    "react": "17.x",
+    "react-dom": "17.x",
+    "react-scripts": "4.x"
   },
   "scripts": {
     "start": "react-scripts start",
